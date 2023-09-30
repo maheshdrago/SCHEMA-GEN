@@ -1,0 +1,3797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schema Generator</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/css/bootstrap-datepicker3.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@2.1.0/build/pure-min.css" integrity="sha384-yHIFVG6ClnONEA5yB5DJXfW2/KC173DIQrYoZMEtBvGzmf0PKiGyNEqe9N6BNDBH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Palanquin+Dark:wght@700&family=Poppins&display=swap');
+    
+    *{
+        font-family: 'Poppins', sans-serif;
+    }
+    .btn-secondary, .btn-primary{
+        border-color: #1f2937;
+        background-color: #1f2937 !important;
+        color: white !important;
+    }
+    .main-wrapper{
+        background-color: white;
+        padding: 24px 14px 24px 14px;
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+        box-shadow: 0 1px 11px 0 #ccc;
+        overflow: auto;
+    }
+    .panel-1{
+        padding: 0px !important;
+        background-color: white;
+        height: max-content;
+        flex-basis: 60%;
+        margin-right: 20px;
+    }
+    .panel-2{
+        margin-left: 110px;
+        overflow: auto;
+        background-color: white;
+        height: max-content;
+        flex-basis: 40%;
+    }
+    .label-text{
+        margin-bottom: 4px !important;
+        font-size: 0.9rem;
+        margin-left: 2px;
+    }
+    .label-text-2{
+        margin-bottom: 2px !important;
+        font-size: 0.9rem;
+        margin-left: 2px;
+        margin-top: 18px;
+    }
+    #article-dropdown{
+        margin-top: 0px !important;
+    }
+    .dropdown{
+        border-radius: 0px !important;
+    }
+    .custom-select{
+        padding: 6px;
+        border: 1px solid gray;
+        border-color: gray;
+    }
+    .h-300{
+        background-color: #1f2937 !important;
+    }
+    pre {
+        display: block;
+        font-family: monospace;
+        white-space: pre;
+        color: #60A5FA;
+        margin: 1em 0;
+    } 
+    .validation-span{
+        color: rgb(249, 56, 56);
+        display: none;
+    }
+    #char-counter{
+        margin-left: 3px;
+        color: rgb(133, 133, 133);
+    }
+    #faq-ul
+    ,#person-ul
+    ,#covid-ul
+    ,#video-ul
+    ,#how-supply-ul
+    ,#how-tool-ul
+    ,#how-step-ul
+    ,#event-ul
+    ,#org-ul
+    ,#local-ul
+    ,#local-ul1
+    ,#product-ul
+    ,#recipe-images-ul
+    ,#recipe-steps-ul
+    ,#recipe-ingredient-ul
+    ,#recipe-review-ul
+    {
+        list-style-type: none;
+    }
+    #recipe-images-ul input{
+        margin-bottom: 5px;
+    }
+    #recipe-steps-ul input{
+        margin-bottom: 5px;
+    }
+    #recipe-ingredient-ul input{
+        margin-bottom: 5px;
+    }
+    #recipe-review-ul input{
+        margin-bottom: 5px;
+    }
+    #faq-ul input{
+        margin-bottom: 5px;
+    }
+    #local-ul input{
+        margin-bottom: 5px;
+    }
+    #local-ul1 input{
+        margin-bottom: 5px;
+    }
+    #person-ul input{
+        margin-bottom: 5px;  
+    }
+    #event-li-select{
+        margin-bottom: 5px; 
+        padding: 6px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        margin-right: 10px;
+    }
+    #covid-ul input{
+        margin-bottom: 5px;
+    }
+    #video-ul input{
+        margin-bottom: 5px;
+    }
+    #how-tool-ul input{
+        margin-bottom: 5px;
+    }
+    #how-step-ul input{
+        margin-bottom: 5px;
+    }
+    #how-supply-input{
+        margin-bottom: 5px;
+    }
+    #how-step-input{
+        margin-bottom: 5px;
+    }
+    #event-ul input{
+        margin-bottom: 5px;
+    }
+    #product-ul input{
+        margin-bottom: 5px;
+    }
+    #org-ul input{
+        margin-bottom: 5px;
+    }
+    ul{
+        padding: 0 !important;
+    }
+
+    .delete-btn{
+        font-size:16px;
+        margin-bottom: 10px;
+    }
+    .error:focus{
+        border-color: red !important;
+        border: 2px solid red !important;
+        box-shadow: none !important;
+    }
+    .box{
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+    .box input{
+        margin-right: 6px;
+    }
+    #organization-select{
+        max-width: 50%;
+        overflow-x: scroll;
+    }
+
+    .input-group{
+        max-width: 100% !important;
+    }
+    
+    #Article
+    ,#Website-Sitelinks
+    ,#FAQ-Page
+    ,#Person
+    ,#COVID-19-Special
+    ,#Video
+    ,#How-To
+    ,#Job
+    ,#Event
+    ,#Local
+    ,#Organization
+    ,#Product
+    ,#Recipe{
+        display: none;
+    }
+    button .i-btn{
+        background-color: #1f2937 !important;
+    }
+    .box-1{
+        display: flex !important;
+        align-items: flex-end !important;
+    }
+    .container{
+        margin-top: 100px !important ;
+    }
+
+    
+</style>
+<body onload = "handleSchemaChange('Article')">
+    <div class="container">
+        <div class="dropdown">
+            <p class="label-text"></p>
+            <a class="btn btn-secondary btn-lg dropdown-toggle" id="panel-dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Article
+            </a>
+            <ul class="dropdown-menu" id="panel-dropdown">
+              <li><a class="dropdown-item" href="#" onclick="handleSchemaChange('Article')">Article</a></li>
+              <li><a class="dropdown-item" href="#" onclick="handleSchemaChange('COVID-19-Special Announcement')">COVID-19-Special Announcement</a></li>
+              <li><a class="dropdown-item" href="#" onclick="handleSchemaChange('Event')">Event</a></li>
+              <li><a class="dropdown-item" href="#" onclick="handleSchemaChange('FAQ-Page')">FAQ-Page</a></li>
+              <li><a class="dropdown-item" href="#" onclick="handleSchemaChange('How-To')">How-To</a></li>
+              <li><a class="dropdown-item" href="#" onclick="handleSchemaChange('Website-Sitelinks Searchbox')">Website-Sitelinks Searchbox</a></li>
+              <li><a class="dropdown-item" href="#" onclick="handleSchemaChange('Person')">Person</a></li>
+              <li><a class="dropdown-item" href="#" onclick="handleSchemaChange('Video')">Video</a></li>
+              <li><a class="dropdown-item" href="#" onclick="handleSchemaChange('Job Posting')">Job Posting</a></li>
+              <li><a class="dropdown-item" href="#" onclick="handleSchemaChange('Organization (Logo, Contacts, Social Profile)')">Organization (Logo, Contacts, Social Profile)</a></li> 
+              <li><a class="dropdown-item" href="#" onclick="handleSchemaChange('Local Business')">Local Business</a></li>             
+              <li><a class="dropdown-item" href="#" onclick="handleSchemaChange('Product (Offer, AggregateRating, Reviews)')">Product (Offer, AggregateRating, Reviews)</a></li>
+              <li><a class="dropdown-item" href="#" onclick="handleSchemaChange('Recipe')">Recipe</a></li>
+            </ul>
+        </div>
+        <br>
+        <div class="main-wrapper">
+            <div class="panel-1">
+                <br>
+                <div id="Article">
+                    <div class="dropdown">
+                        <p class="label-text">Article Type</p>
+                        <a class="btn btn-secondary dropdown-toggle" id="article-dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Article
+                        </a>
+                        <ul class="dropdown-menu" id="article-dropdown">
+                          <li><a class="dropdown-item" href="#" onclick="handleArticleChange('Article',0,'Article')">Article</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleArticleChange('News Article',0,'NewsArticle')">News Article</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleArticleChange('Blog Posting',0,'BlogPosting')">Blog Posting</a></li>
+                        </ul>
+                    </div>
+    
+                    <p class="label-text-2">URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="headline-url" class="form-control" placeholder="www.deepawali-article.co"  onKeyUp="handleArticleChange('',1,this.value)" aria-describedby="basic-addon1">
+                    </div>
+                    <span class="validation-span" id="url-validation">invalid URL!</span>
+    
+                    <p class="label-text-2">Article Headline</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="headline-input" class="form-control" placeholder="110 Characters are allowed at Max"  onKeyUp="handleArticleChange('',2,this.value)" aria-describedby="basic-addon1">
+                    </div>
+                    <span id="char-counter">0</span style="color:rgb(133, 133, 133);"><span>/110</span>
+    
+                    <p class="label-text-2">Description</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Best SEO tips..." onKeyUp="handleArticleChange('',3,this.value)" aria-describedby="basic-addon1">
+                    </div>
+    
+                    <p class="label-text-2">Image URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="image-url" class="form-control" placeholder=""  onKeyUp="handleArticleChange('',4,this.value)" aria-describedby="basic-addon1">
+                    </div>
+                    <span class="validation-span" id="image-url-validation">invalid URL!</span>
+    
+                    <p class="label-text-2">Image Width</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="image-width" class="form-control" placeholder=">=696px" onKeyUp="handleArticleChange('',5,this.value)" aria-describedby="basic-addon1">
+                    </div>
+    
+                    <p class="label-text-2">Image Height</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="image-height" class="form-control" onKeyUp="handleArticleChange('',6,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div>
+    
+                    <p class="label-text-2">Author Name</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleArticleChange('',7,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div>
+
+                    <p class="label-text-2">Publisher Name</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleArticleChange('',8,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Publisher Logo URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="publisher-logo" class="form-control" onKeyUp="handleArticleChange('',9,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+                    <span class="validation-span" id="publisher-logo-url-validation">invalid URL!</span>
+
+                    <p class="label-text-2">Publisher Logo Width</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="publisher-logo-width" class="form-control" onKeyUp="handleArticleChange('',10,this.value)" placeholder="<=600px"  aria-describedby="basic-addon1">
+                    </div>
+                    
+                    <p class="label-text-2">Publisher Logo Height</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="publisher-logo-height" class="form-control" onKeyUp="handleArticleChange('',11,this.value)" placeholder="<=60px"  aria-describedby="basic-addon1">
+                    </div>
+
+                    <p class="label-text-2">Date Published</p>
+                    <div class="input-group mb-3">
+                        <input type="date" class="form-control" onchange="handleArticleChange('',12,this.value)"   aria-describedby="basic-addon1" data-input>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <input type="date" class="form-control" onchange="handleArticleChange('',13,this.value)"  data-placeholder="Date of birth" aria-describedby="basic-addon1" >
+                    </div>
+
+                </div>
+                
+                <div id="Website-Sitelinks">
+                    <p class="label-text">Website Name</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleWebsiteChange('',0,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="website-url" class="form-control" onKeyUp="handleWebsiteChange('',1,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+                    <span class="validation-span" id="website-url-validation">invalid URL!</span>
+
+                    <p class="label-text-2">Search URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="website-search-url" class="form-control" onKeyUp="handleWebsiteChange('',2,this.value)" placeholder="Internal site search url (e.g.https://deepawali.com/search?q=)"  aria-describedby="basic-addon1">
+                    </div> 
+                    <span class="validation-span" id="website-search-url-validation">invalid URL!</span>
+                </div>
+
+                <div id="FAQ-Page">
+                    <ul id="faq-ul"></ul>
+                    <input class="btn btn-primary" type="button" value="+ Add Question" onclick="addFaqQuestion();">
+                </div>
+
+                <div id="COVID-19-Special">
+                    <p class="label-text">Announcement Name</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleCovidChange('',0,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Announcement Text</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleCovidChange('',1,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Quarantine Guidelines URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleCovidChange('',2,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Disease Prevention Info URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleCovidChange('',3,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div>
+
+                    <p class="label-text-2">Date Posted</p>
+                    <div class="input-group mb-3">
+                        <input type="date" class="form-control" onchange="handleCovidChange('',4,this.value)"   aria-describedby="basic-addon1">
+                    </div>
+
+                    <p class="label-text-2">Time Posted</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="time-posted-input" class="form-control" onKeyUp="handleCovidChange('',5,this.value)"  placeholder="00:00 - 23:59" aria-describedby="basic-addon1" data-input>
+                    </div>
+
+                    <p class="label-text-2">Date Expires</p>
+                    <div class="input-group mb-3">
+                        <input type="date" class="form-control" onchange="handleCovidChange('',6,this.value)"   aria-describedby="basic-addon1" data-input>
+                    </div>
+
+                    <p class="label-text-2">Time Expires</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="time-expire-input" class="form-control" onKeyUp="handleCovidChange('',7,this.value)"   placeholder="00:00 - 23:59" aria-describedby="basic-addon1" data-input>
+                    </div>
+
+                    <p class="label-text-2">Spatial Coverage - Administrative Areas</p>
+                    <ul id="covid-ul"></ul>
+                    <input class="btn btn-primary" type="button" value="+ Add Area" onclick="addCovidArea();">
+                </div>
+
+                <div id="Person">
+                    <p class="label-text">Name</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handlePersonChange('',0,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="person-url" class="form-control" onKeyUp="handlePersonChange('',1,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+                    <span class="validation-span" id="person-url-validation">invalid URL!</span>
+
+                    <p class="label-text-2">Image URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="person-image-url" class="form-control" onKeyUp="handlePersonChange('',2,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+                    <span class="validation-span" id="person-image-url-validation">invalid URL!</span>
+
+                    <p class="label-text-2">Job Title</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handlePersonChange('',3,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Company</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handlePersonChange('',4,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Social Profiles</p>
+                    <ul id="person-ul"></ul>
+                    <input class="btn btn-primary" type="button" value="+ Add Profile" onclick="addProfile();">
+                </div>
+
+                <div id="Video">
+                    <p class="label-text">Name</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleVideoChange('',0,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+    
+                    <p class="label-text-2">Description</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleVideoChange('',1,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+    
+                    <p class="label-text-2">Upload Date</p>
+                    <div class="input-group mb-3">
+                        <input type="date" class="form-control" onchange="handleVideoChange('',2,this.value)" aria-describedby="basic-addon1" data-input>
+                    </div>
+    
+                    <p class="label-text-2">Video Duration</p>
+                    <div class="box">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleVideoChange('',3,this.value)" placeholder="Minutes"  aria-describedby="basic-addon1">
+                        </div> 
+    
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleVideoChange('',4,this.value)" placeholder="Seconds"  aria-describedby="basic-addon1">
+                        </div> 
+                    </div>
+                    
+                    <p class="label-text-2">Thumbnail URL</p>
+                    <ul id="video-ul"></ul>
+                    <input class="btn btn-primary" type="button" value="+ Add Thumbnail URL" onclick="addThumbnail();">
+
+                    <p class="label-text-2">Content URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="video-content-url" class="form-control" onKeyUp="handleVideoChange('',6,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+                    <span class="validation-span" id="video-content-url-validation">invalid URL!</span>
+    
+                    <p class="label-text-2">Embed URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="video-embed-url" class="form-control" onKeyUp="handleVideoChange('',7,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+                    <span class="validation-span" id="video-embed-url-validation">invalid URL!</span>
+    
+                    <p class="label-text-2">Publisher Name</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleVideoChange('',8,this.value)"  aria-describedby="basic-addon1" >
+                    </div>
+    
+                    <p class="label-text-2">Publisher Logo URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="video-logo-url" class="form-control" onKeyUp="handleVideoChange('',9,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+                    <span class="validation-span" id="video-logo-url-validation">invalid URL!</span>
+
+                    <p class="label-text-2">Publisher Logo Width</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="video-publisher-logo-width" class="form-control" onKeyUp="handleVideoChange('',10,this.value)" placeholder="<=600px"  aria-describedby="basic-addon1">
+                    </div>
+                    
+                    <p class="label-text-2">Publisher Logo Height</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="video-publisher-logo-height" class="form-control" onKeyUp="handleVideoChange('',11,this.value)" placeholder="<=60px"  aria-describedby="basic-addon1">
+                    </div>
+                </div>
+
+                <div id="How-To">
+                    <p class="label-text">Name</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleHowChange('',0,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+    
+                    <p class="label-text-2">Description</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleHowChange('',1,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+    
+                    <div class="box">
+                        <div>
+                            <p class="label-text-2">Total Time</p>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" onKeyUp="handleHowChange('',2,this.value)" placeholder="Minutes"  aria-describedby="basic-addon1">
+                            </div> 
+                        </div>
+                        
+                        <div>
+                            <p class="label-text-2">Estimated Cost</p>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" onKeyUp="handleHowChange('',3,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                            </div> 
+                        </div>
+
+                        <div>
+                            <p class="label-text-2">Currency</p>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" onKeyUp="handleHowChange('',4,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                            </div> 
+                        </div>
+                    </div>
+                    
+                    <p class="label-text-2">Image URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="how-image-url" class="form-control" onKeyUp="handleHowChange('',5,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+                    <span class="validation-span" id="how-image-url-validation">invalid URL!</span>
+
+                    <ul id="how-supply-ul"></ul>
+                    <input class="btn btn-primary" type="button" value="+ Add Supply" onclick="addSupply();"><hr>
+
+                    <ul id="how-tool-ul"></ul>
+                    <input class="btn btn-primary" type="button" value="+ Add Tool" onclick="addTool();"><hr>
+
+                    <ul id="how-step-ul"></ul>
+                    <input class="btn btn-primary" type="button" value="+ Add Step" onclick="addStep();"><hr>
+
+                </div>
+
+                <div id="Job">
+                    <p class="label-text">Job Title</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleJobChange('',0,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+    
+                    <p class="label-text-2">Identifier</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleJobChange('',1,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Job Description</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleJobChange('',2,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Company</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleJobChange('',3,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Company URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="job-company-url" class="form-control" onKeyUp="handleJobChange('',4,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+                    <span class="validation-span" id="job-company-url-validation">invalid URL!</span>
+
+                    <p class="label-text-2">Industry</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleJobChange('',5,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <div class="dropdown">
+                        <p class="label-text">Employment Type</p>
+                        <a class="btn btn-secondary dropdown-toggle" id="job-type-dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Type
+                        </a>
+                        <ul class="dropdown-menu" id="article-dropdown">
+                          <li><a class="dropdown-item" href="#" onclick="handleJobChange('Article',6,'FULL_TIME')">Full Time</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleJobChange('Part Time',6,'PART_TIME')">Part Time</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleJobChange('Contractor',6,'CONTRACTOR')">Contractor</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleJobChange('Temporary',6,'TEMPORARY')">Temporary</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleJobChange('Intern',6,'INTERN')">Intern</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleJobChange('Volunteer',6,'VOLUNTEER')">Volunteer</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleJobChange('Per diem',6,'PER_DIEM')">Per diem</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleJobChange('Other',6,'OTHER')">Other</a></li>
+
+                        </ul>
+                    </div>
+
+                    <p class="label-text-2">Work hours (e.g. 8am-5pm, shift)</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleJobChange('',7,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Date Posted</p>
+                    <div class="input-group mb-3">
+                        <input type="date" class="form-control" onchange="handleJobChange('',8,this.value)"   aria-describedby="basic-addon1">
+                    </div>
+
+                    <p class="label-text-2">Valid Through</p>
+                    <div class="input-group mb-3">
+                        <input type="date" class="form-control" onchange="handleJobChange('',9,this.value)"   aria-describedby="basic-addon1">
+                    </div>
+
+                    <p class="label-text-2">Country Code</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleJobChange('',10,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Region Code</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleJobChange('',11,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" onchange="handleJobChange('','check','')">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Remote Job
+                        </label>
+                    </div>
+
+                    <div id="address">
+                        <p class="label-text-2">Street</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleJobChange('',12,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                        </div> 
+
+                        <p class="label-text-2">City</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleJobChange('',13,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                        </div> 
+
+                        <p class="label-text-2">Zip Code</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleJobChange('',14,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                        </div> 
+                    </div>
+
+                    <p class="label-text-2">Salary (or min. salary)</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleJobChange('',15,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                        </div> 
+
+                    <p class="label-text-2">Responsibilities</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleJobChange('',16,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                        </div> 
+
+                    <p class="label-text-2">Skills</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleJobChange('',17,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                        </div> 
+
+                    <p class="label-text-2">Qualifications</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleJobChange('',18,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                        </div> 
+
+                    <p class="label-text-2">Education Requirements</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleJobChange('',19,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                        </div> 
+
+                    <p class="label-text-2">Experience Requirements</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleJobChange('',20,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                        </div> 
+                </div>
+
+                <div id="Event">
+                    <p class="label-text">Name</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleEventChange('',0,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+    
+                    <p class="label-text-2">Description</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleEventChange('',1,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Image URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="event-image-url" class="form-control" onKeyUp="handleEventChange('',2,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+                    <span class="validation-span" id="event-image-url-validation">invalid URL!</span>
+
+                    <div class="box">
+                        <div>
+                            <p class="label-text-2">Start Date</p>
+                            <div class="input-group mb-3">
+                                <input type="date" class="form-control" onchange="handleEventChange('',3,this.value)" aria-describedby="basic-addon1" data-input>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="label-text-2">Start Time</p>
+                            <div class="input-group mb-3">
+                                <input type="text" id="event-start-input" class="form-control" onKeyUp="handleEventChange('',4,this.value)"  placeholder="00:00 - 23:59" aria-describedby="basic-addon1" data-input>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box">
+                        <div>
+                            <p class="label-text-2">End Date</p>
+                            <div class="input-group mb-3">
+                                <input type="date" class="form-control" onchange="handleEventChange('',5,this.value)" aria-describedby="basic-addon1" data-input>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="label-text-2">End Time</p>
+                            <div class="input-group mb-3">
+                                <input type="text" id="event-end-input" class="form-control" onKeyUp="handleEventChange('',6,this.value)"  placeholder="00:00 - 23:59" aria-describedby="basic-addon1" data-input>
+                            </div>
+                        </div> 
+                    </div>
+
+                    <div class="dropdown">
+                        <p class="label-text">Performer Type</p>
+                        <a class="btn btn-secondary dropdown-toggle" id="event-performer-dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Type
+                        </a>
+                        <ul class="dropdown-menu" >
+                          <li><a class="dropdown-item" href="#" onclick="handleEventChange('Person',7,'Person')">Person</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleEventChange('Performing Group',7,'PerformingGroup')">Performing Group</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleEventChange('Dance Group',7,'DanceGroup')">Dance Group</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleEventChange('Music Group',7,'MusicGroup')">Music Group</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleEventChange('Theater Group',7,'TheaterGroup')">Theater Group</a></li>
+
+                        </ul>
+                    </div>
+
+                    <p class="label-text-2">Performer Name</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleEventChange('',8,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Venue Name</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleEventChange('',9,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Street</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleEventChange('',10,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">City</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleEventChange('',11,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Zip Code</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleEventChange('',12,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Country Code</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleEventChange('',13,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+                    
+                    <p class="label-text-2">Region Code</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleEventChange('',14,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Currency Code</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleEventChange('',15,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Tickets</p>
+                    <ul id="event-ul"></ul>
+                    <input class="btn btn-primary" type="button" value="+ Add Ticket" onclick="addTicket();"><hr>
+
+                </div>
+
+                <div id="Organization">
+                    <p class="label-text">Organization Type</p>
+                    <div class="dropdown">
+                        <a class="btn btn-secondary dropdown-toggle" id="org-dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Type
+                        </a>
+                        <ul class="dropdown-menu" >
+                          <li><a class="dropdown-item" href="#" onclick="handleOrgChange('Organization',0,'Organization')">Organization</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleOrgChange('Airline',0,'Airline')">Airline</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleOrgChange('Consortium',0,'Consortium')">Consortium</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleOrgChange('Corporation',0,'Corporation')">Corporation</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleOrgChange('EducationalOrganization',0,'EducationalOrganization')">EducationalOrganization</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleOrgChange('GovernmentOrganization',0,'GovernmentOrganization')">GovernmentOrganization</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleOrgChange('LibrarySystem',0,'LibrarySystem')">LibrarySystem</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleOrgChange('MedicalOrganization',0,'MedicalOrganization')">MedicalOrganization</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleOrgChange('NGO',0,'NGO')">NGO</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleOrgChange('NewsMediaOrganization',0,'NewsMediaOrganization')">NewsMediaOrganization</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleOrgChange('PerformingGroup',0,'PerformingGroup')">PerformingGroup</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleOrgChange('Project',0,'Project')">Project</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleOrgChange('SportsOrganization',0,'SportsOrganization')">SportsOrganization</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleOrgChange('WorkersUnion',0,'WorkersUnion')">WorkersUnion</a></li>
+                        </ul>
+                      </div>
+    
+                    <p class="label-text-2">Name</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleOrgChange('',1,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Alternate Name</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleOrgChange('',2,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="org-url" class="form-control" onKeyUp="handleOrgChange('',3,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+                    <span class="validation-span" id="org-url-validation">invalid URL!</span>
+
+                    <p class="label-text-2">Logo URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="org-logo-url" class="form-control" onKeyUp="handleOrgChange('',4,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+                    <span class="validation-span" id="org-logo-url-validation">invalid URL!</span>
+
+                    <p class="label-text-2">Profiles</p>
+                    <ul id="org-ul"></ul>
+                    <input class="btn btn-primary" type="button" value="+ Add Profile" onclick="addOrgProfile();"><hr>
+
+                </div>
+
+                <div id="Local">
+                    <p class="label-text-2">Name</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleLocalChange('',0,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Image URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="local-image-url" class="form-control" onKeyUp="handleLocalChange('',1,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+                    <span class="validation-span" id="local-image-url-validation">invalid URL!</span>
+
+                    <p class="label-text-2">Id (URL)</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="local-id-url" class="form-control" onKeyUp="handleLocalChange('',2,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+                    <span class="validation-span" id="local-id-url-validation">invalid URL!</span>
+
+                    <p class="label-text-2">URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="local-url" class="form-control" onKeyUp="handleLocalChange('',3,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+                    <span class="validation-span" id="local-url-validation">invalid URL!</span>
+
+                    <p class="label-text-2">Phone</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleLocalChange('',4,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Price Range</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleLocalChange('',5,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Street</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleLocalChange('',6,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">City</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleLocalChange('',7,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Zip Code</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleLocalChange('',8,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Country Code</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleLocalChange('',9,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div>
+                    
+                    <p class="label-text-2">Region Code</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleLocalChange('',10,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Profiles</p>
+                    <ul id="local-ul"></ul>
+                    <input class="btn btn-primary" type="button" value="+ Add Profile" onclick="addLocalProfile();"><hr>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault-1" onchange="handleLocalChange('','check','')">
+                        <label class="form-check-label" for="flexCheckDefault-1">
+                            Open 24/7
+                        </label>
+                    </div>
+
+                    <div id="open-hours">
+                        <p class="label-text-2">Opening Hours</p>
+                        <ul id="local-ul1"></ul>
+                        <input class="btn btn-primary" type="button" value="+ Add Opening Hours" onclick="addOpeningHours();"><hr>
+                    </div>
+
+                </div>
+
+                <div id="Product">
+                    <p class="label-text-2">Name</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleProductChange('',0,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Image URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="product-image-url" class="form-control" onKeyUp="handleProductChange('',1,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+                    <span class="validation-span" id="product-image-url-validation">invalid URL!</span>
+
+                    <p class="label-text-2">Brand</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleProductChange('',2,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div>
+
+                    <p class="label-text-2">Description</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleProductChange('',3,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div>
+
+                    <div class="box">
+                        <div>
+                            <p class="label-text-2">ID Properties</p>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" onKeyUp="handleProductChange('',4,this.value)" placeholder="SKU"  aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+                        <div>
+                            <p class="label-text-2">Aggregate Rating</p>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" onKeyUp="handleProductChange('',8,this.value)" placeholder="Aggregate rating value"  aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box">
+                        <div>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" onKeyUp="handleProductChange('',5,this.value)" placeholder="gtin8"  aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" onKeyUp="handleProductChange('',9,this.value)" placeholder="Number of ratings"  aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box">
+                        <div>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" onKeyUp="handleProductChange('',6,this.value)" placeholder="gtin13"  aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" onKeyUp="handleProductChange('',10,this.value)" placeholder="Highest value allowed"  aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box">
+                        <div>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" onKeyUp="handleProductChange('',7,this.value)" placeholder="gtin14"  aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" onKeyUp="handleProductChange('',11,this.value)" placeholder="Lowest value allowed"  aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="label-text-2">mpn</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleProductChange('',12,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div>
+                    
+                    <div class="dropdown">
+                        <p class="label-text">Offer Type</p>
+                        <a class="btn btn-secondary dropdown-toggle" id="offer-dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Type
+                        </a>
+                        <ul class="dropdown-menu" >
+                          <li><a class="dropdown-item" href="#" onclick="handleProductChange('None',13,'None')">None</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleProductChange('Offer',13,'Offer')">Offer</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleProductChange('AggregateOffer',13,'AggregateOffer')">Aggregate Offer</a></li>
+                        </ul>
+                    </div>
+
+                    <div id="offer-div">
+                        <p class="label-text-2">URL</p>
+                        <div class="input-group mb-3">
+                            <input type="text" id="product-url" class="form-control" onKeyUp="handleProductChange('',14,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                        </div> 
+                        <span class="validation-span" id="product-url-validation">invalid URL!</span>
+
+                        <p class="label-text-2">Currency Code</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleProductChange('',15,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                        </div>
+
+                        <p class="label-text-2">Price</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleProductChange('',16,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                        </div>
+                        
+                        <p class="label-text-2">Price Valid until</p>
+                        <div class="input-group mb-3">
+                            <input type="date" class="form-control" onchange="handleProductChange('',17,this.value)" aria-describedby="basic-addon1" data-input>
+                        </div>
+                        
+                        <div class="dropdown">
+                            <p class="label-text">Condition</p>
+                            <a class="btn btn-secondary dropdown-toggle" id="used-dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                              Type
+                            </a>
+                            <ul class="dropdown-menu" >
+                              <li><a class="dropdown-item" href="#" onclick="handleProductChange('Not Specified',18,'NotSpecified')">Not Specified</a></li>
+                              <li><a class="dropdown-item" href="#" onclick="handleProductChange('New',18,'New')">New</a></li>
+                              <li><a class="dropdown-item" href="#" onclick="handleProductChange('Used',18,'Used')">Used</a></li>
+                            </ul>
+                        </div>
+    
+                        <div class="dropdown">
+                            <p class="label-text">Availability</p>
+                            <a class="btn btn-secondary dropdown-toggle" id="availability-dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                              Type
+                            </a>
+                            <ul class="dropdown-menu" >
+                              <li><a class="dropdown-item" href="#" onclick="handleProductChange('None',19,'None')">None</a></li>
+                              <li><a class="dropdown-item" href="#" onclick="handleProductChange('In Stock',19,'InStock')">In Stock</a></li>
+                              <li><a class="dropdown-item" href="#" onclick="handleProductChange('Out Of Stock',19,'OutOfStock')">Out Of Stock</a></li>
+                              <li><a class="dropdown-item" href="#" onclick="handleProductChange('Online Only',19,'OnlineOnly')">Online Only</a></li>
+                              <li><a class="dropdown-item" href="#" onclick="handleProductChange('In Store Only',19,'InStoreOnly')">In Store Only</a></li>
+                              <li><a class="dropdown-item" href="#" onclick="handleProductChange('Pre Order',19,'PreOrder')">Pre Order</a></li>
+                              <li><a class="dropdown-item" href="#" onclick="handleProductChange('Pre Sale',19,'PreSale')">Pre Sale</a></li>
+                              <li><a class="dropdown-item" href="#" onclick="handleProductChange('Limited Availability',19,'LimitedAvailability')">Limited Availability</a></li>
+                              <li><a class="dropdown-item" href="#" onclick="handleProductChange('Sold Out',19,'SoldOut')">Sold Out</a></li>
+                              <li><a class="dropdown-item" href="#" onclick="handleProductChange('Discontinued',19,'Discontinued')">Discontinued</a></li>
+                            </ul>
+                        </div>
+    
+                    </div>
+
+                    
+                    <div id="aggregate-div">
+                        <p class="label-text-2">URL</p>
+                        <div class="input-group mb-3">
+                            <input type="text" id="product-url" class="form-control" onKeyUp="handleProductChange('',14,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                        </div> 
+                        <span class="validation-span" id="product-url-validation">invalid URL!</span>
+
+                        <p class="label-text-2">Currency Code</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleProductChange('',15,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                        </div>
+
+                        <p class="label-text-2">Low Price</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleProductChange('',20,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                        </div>
+
+                        <p class="label-text-2">High Price</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleProductChange('',21,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                        </div>
+
+                        <p class="label-text-2">Number of Offers</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleProductChange('',22,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+
+                    <p class="label-text-2">Reviews</p>
+                    <ul id="product-ul"></ul>
+                    <input class="btn btn-primary" type="button" value="+ Add Review" onclick="addProductReview();"><hr>
+                </div>
+
+                <div id="Recipe">
+                    <p class="label-text-2">Name</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleRecipeChange('',0,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Description</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleRecipeChange('',1,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Keywords</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleRecipeChange('',2,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Creator</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleRecipeChange('',3,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Images</p>
+                    <ul id="recipe-images-ul"></ul>
+                    <input class="btn btn-primary" type="button" value="+ Add Images" onclick="addRecipeImages();"><hr>
+
+                    <div class="dropdown">
+                        <p class="label-text">Category</p>
+                        <a class="btn btn-secondary dropdown-toggle" id="recipe-category-dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          None
+                        </a>
+                        <ul class="dropdown-menu" >
+                          <li><a class="dropdown-item" href="#" onclick="handleRecipeChange('None',5,'None')">None</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleRecipeChange('Appetizer',5,'appetizer')">Appetizer</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleRecipeChange('Entree',5,'Entree')">Entree</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="handleRecipeChange('Dessert',5,'Dessert')">Dessert</a></li>
+                        </ul>
+                    </div>
+
+                    <p class="label-text-2">Cuisine</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleRecipeChange('',6,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Servings</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleRecipeChange('',7,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Preparation (min)</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleRecipeChange('',8,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div>
+                    
+                    <p class="label-text-2">Cooking (min)</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleRecipeChange('',9,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Serving Size</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleRecipeChange('',10,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Calories</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleRecipeChange('',11,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Fat (grams)</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" onKeyUp="handleRecipeChange('',12,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+
+                    <p class="label-text-2">Steps</p>
+                    <ul id="recipe-steps-ul"></ul>
+                    <input class="btn btn-primary" type="button" value="+ Add Step" onclick="addRecipeSteps();"><hr>
+
+                    <p class="label-text-2">Ingredients</p>
+                    <ul id="recipe-ingredient-ul"></ul>
+                    <input class="btn btn-primary" type="button" value="+ Add Ingredients" onclick="addRecipeIngredients();"><hr>
+
+                    <p class="label-text-2">Video Content URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="recipe-content-url" class="form-control" onKeyUp="handleRecipeChange('',15,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+                    <span class="validation-span" id="recipe-content-url-validation">invalid URL!</span>
+
+                    <p class="label-text-2">Video Embed URL</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="recipe-embed-url" class="form-control" onKeyUp="handleRecipeChange('',16,this.value)" placeholder=""  aria-describedby="basic-addon1">
+                    </div> 
+                    <span class="validation-span" id="recipe-embed-url-validation">invalid URL!</span>
+
+                    <p class="label-text-2">Date Published</p>
+                    <div class="input-group mb-3">
+                        <input type="date" class="form-control" onchange="handleRecipeChange('',17,this.value)" aria-describedby="basic-addon1" data-input>
+                    </div>
+
+                    <p class="label-text-2">Aggregate Rating</p>
+
+                    <div class="box">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleRecipeChange('',18,this.value)" placeholder="Aggregate rating value"  aria-describedby="basic-addon1">
+                        </div> 
+    
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleRecipeChange('',19,this.value)" placeholder="Number of ratings"  aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+
+                    <div class="box">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleRecipeChange('',20,this.value)" placeholder="Highest value allowed"  aria-describedby="basic-addon1">
+                        </div> 
+    
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" onKeyUp="handleRecipeChange('',21,this.value)" placeholder="Lowest value allowed"  aria-describedby="basic-addon1">
+                        </div> 
+                    </div>
+                
+                    
+                    <p class="label-text-2">Reviews</p>
+                    <ul id="recipe-review-ul"></ul>
+                    <input class="btn btn-primary" type="button" value="+ Add Review" onclick="addRecipeReviews();"><hr>
+
+
+                </div>
+
+            </div>
+
+
+            <div class="panel-2" id="script-pane">
+                
+                <div class="h-300 p-5 text-dark bg-light rounded-3" id="display">
+                    <div class="box-1" style="display: flex;justify-content:flex-end;">
+                        <button style="border:none;background-color:#1f2937;" class="i-btn" onclick="copy_code();"><i style="font-size: 25px;color: white;" class="far fa-copy"></i></button>
+                        <button style="border:none;background-color:#1f2937;margin-left: 12px;" class="i-btn"  onclick="reset_code();"><i style="font-size: 22px;color: white;" class="fas fa-trash"></i></button>
+                    </div>
+                    <div id="content"></div>
+                </div>
+            </div>
+        </div>
+        <br><br><br>
+    </div>
+</body>
+<script src="https://kit.fontawesome.com/411329c929.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous" referrerpolicy="no-referrer" ></script>
+<script>
+
+    let all_panels = ['Article','Website-Sitelinks','FAQ-Page','Person','COVID-19-Special','Video','How-To','Job','Event','Organization','Local','Product','Recipe'];//'
+    let faq_cnt = 0;
+    let profile_cnt=0;
+    let covid_cnt=0;
+    let video_cnt = 0;
+    let how_supply_cnt = 0;
+    let how_tool_cnt = 0;
+    let how_step_cnt = 0;
+    let event_cnt = 0;
+    let org_cnt = 0;
+    let local_profile_cnt = 0;
+    let local_opening_cnt = 0;
+    let product_cnt = 0;
+    let recipe_image_cnt = 0;
+    let recipe_ingredients_cnt = 0;
+    let recipe_reviews_cnt = 0;
+    let recipe_steps_cnt = 0;
+
+    let article_values = [
+        {article_type:""},
+        {url:''},
+        {headline:''},
+        {description:''},
+        {image_url:''},
+        {image_width:''},
+        {image_height:''},
+        {author_name:''},
+        {publisher_name:''},
+        {publisher_logo_url:''},
+        {publisher_logo_width:''},
+        {publisher_logo_height:''},
+        {date_published:''},
+        {date_modified:''}
+    ];
+
+    let person_values = [
+        {name:''},
+        {url:''},
+        {image_url:''},
+        {job_title:''},
+        {company:''},
+        {}
+    ];
+
+    let website_values = [
+        {website_name:""},
+        {url:''},
+        {search_url:''},
+    ];
+
+    let covid_values = [
+        {name:""},
+        {text:''},
+        {quarantineGuidelines:''},
+        {diseasePreventionInfo:''},
+        {datePosted:''},
+        {timePosted:''},
+        {dateExpires:''},
+        {timeExpires:''},
+        {}
+    ];
+
+    let video_values = [
+        {name:''},
+        {description:''},
+        {upload_date:''},
+        {minutes:''},
+        {seconds:''},
+        {},
+        {content_url:''},
+        {embed_url:''},
+        {publisher_name:''},
+        {publisher_logo_url:''},
+        {publisher_logo_width:''},
+        {publisher_logo_height:''}
+    ];
+
+    let how_values = [
+        {name:''},
+        {description:''},
+        {time:''},
+        {cost:''},
+        {currency:''},
+        {image_url:''},
+        {},
+        {},
+        {}
+    ];
+
+    let job_values = [
+        {title:''},
+        {identifier:''},
+        {description:''},
+        {company:''},
+        {company_url:''},
+        {industry:''},
+        {type:''},
+        {hours:''},
+        {posted:''},
+        {expires:''},
+        {country_code:''},
+        {region_code:''},
+        {street:''},
+        {city:''},
+        {zip_code:''},
+        {salary:''},
+        {responsibilities:''},
+        {skills:''},
+        {qualifications:''},
+        {education_requirements:''},
+        {experience_requirements:''}
+    ];
+
+    let event_values = [
+        {name:''},
+        {description:''},
+        {image_url:''},
+        {start_date:''},
+        {start_time:''},
+        {end_date:''},
+        {end_time:''},
+        {performer_type:''},
+        {performer_name:''},
+        {venue_name:''},
+        {street:''},
+        {city:''},
+        {zip_code:''},
+        {country_code:''},
+        {region_code:''},
+        {currency_code:''},
+        {}
+    ];
+
+    let org_values = [
+        {type:''},
+        {name:''},
+        {alt_name:''},
+        {url:''},
+        {logo_url:''},
+        {}
+    ];
+
+    let local_values = [
+        {name:''},
+        {image_url:''},
+        {id_url:''},
+        {url:''},
+        {phone:''},
+        {price_range:''},
+        {street:''},
+        {city:''},
+        {zip_code:''},
+        {country_code:''},
+        {region_code:''},
+        {},
+        {}
+    ];
+
+    let product_values = [
+        {name:''},
+        {image_url:''},
+        {brand:''},
+        {description:''},
+        {sku:''},
+        {gtin8:''},
+        {gtin13:''},
+        {gtin14:''},
+        {aggregate_rating_value:''},
+        {number_of_ratings:''},
+        {highest_value_allowed:''},
+        {lowest_value_allowed:''},
+        {mpn:''},
+        {offer_type:''},
+        {url:''},
+        {currency_code:''},
+        {price:''},
+        {price_validity:''},
+        {condition:''},
+        {availability:''},
+        {low_price:''},
+        {high_price:''},
+        {no_of_offers:''},
+        {}
+    ];
+
+    let recipe_values = [
+        {name:''},
+        {description:''},
+        {keywords:''},
+        {creator:''},
+        {},
+        {category:''},
+        {cuisine:''},
+        {servings:''},
+        {preparation:''},
+        {cooking:''},
+        {serving_size:''},
+        {calories:''},
+        {fat:''},
+        {},
+        {},
+        {video_content_url:''},
+        {video_embed_url:''},
+        {date_published:''},
+        {aggregate_rating_value:''},
+        {number_of_ratings:''},
+        {highest_value_allowed:''},
+        {lowest_value_allowed:''},
+        {}
+    ];
+    
+    let faq_values = {};
+
+    const reset_code = ()=>{
+        const e = document.getElementById("panel-dropdown").text;
+
+        if(e=='Article'){
+            article_values = [
+                {article_type:""},
+                {url:''},
+                {headline:''},
+                {description:''},
+                {image_url:''},
+                {image_width:''},
+                {image_height:''},
+                {author_name:''},
+                {publisher_name:''},
+                {publisher_logo_url:''},
+                {publisher_logo_width:''},
+                {publisher_logo_height:''},
+                {date_published:''},
+                {date_modified:''}
+            ];
+            schema_generator(0);
+        }
+        else if(e=="Website-Sitelinks Searchbox"){
+            website_values = [
+                {website_name:""},
+                {url:''},
+                {search_url:''},
+            ];
+            schema_generator(1);
+        }
+        else if(e=="FAQ-Page"){
+            faq_cnt = 0;
+            faq_values = {};
+            schema_generator(2);
+        }
+        else if(e=="Person"){
+            person_values = [
+                {name:''},
+                {url:''},
+                {image_url:''},
+                {job_title:''},
+                {company:''},
+                {}
+            ];
+            profile_cnt=0;
+            schema_generator(3);
+        }
+        else if(e=="COVID-19-Special Announcement"){
+            covid_values = [
+                {name:""},
+                {text:''},
+                {quarantineGuidelines:''},
+                {diseasePreventionInfo:''},
+                {datePosted:''},
+                {timePosted:''},
+                {dateExpires:''},
+                {timeExpires:''},
+                {}
+            ];
+            covid_cnt=0;
+            schema_generator(4);
+        }
+        else if(e=="Video"){
+            video_values = [
+                {name:''},
+                {description:''},
+                {upload_date:''},
+                {minutes:''},
+                {seconds:''},
+                {},
+                {content_url:''},
+                {embed_url:''},
+                {publisher_name:''},
+                {publisher_logo_url:''},
+                {publisher_logo_width:''},
+                {publisher_logo_height:''}
+            ];
+            video_cnt = 0;
+            schema_generator(5);
+        }
+        else if(e=="How-To"){
+            how_values = [
+                {name:''},
+                {description:''},
+                {time:''},
+                {cost:''},
+                {currency:''},
+                {image_url:''},
+                {},
+                {},
+                {}
+            ];
+            how_supply_cnt = 0;
+            how_tool_cnt = 0;
+            how_step_cnt = 0;
+            schema_generator(6);
+        }
+        else if(e=="Job Posting"){
+            job_values = [
+                {title:''},
+                {identifier:''},
+                {description:''},
+                {company:''},
+                {company_url:''},
+                {industry:''},
+                {type:''},
+                {hours:''},
+                {posted:''},
+                {expires:''},
+                {country_code:''},
+                {region_code:''},
+                {street:''},
+                {city:''},
+                {zip_code:''},
+                {salary:''},
+                {responsibilities:''},
+                {skills:''},
+                {qualifications:''},
+                {education_requirements:''},
+                {experience_requirements:''}
+            ];
+            schema_generator(7);
+        }
+        else if(e=="Event"){
+            event_values = [
+                {name:''},
+                {description:''},
+                {image_url:''},
+                {start_date:''},
+                {start_time:''},
+                {end_date:''},
+                {end_time:''},
+                {performer_type:''},
+                {performer_name:''},
+                {venue_name:''},
+                {street:''},
+                {city:''},
+                {zip_code:''},
+                {country_code:''},
+                {region_code:''},
+                {currency_code:''},
+                {}
+            ];
+            event_cnt = 0;
+            schema_generator(8);
+        }
+        else if(e=="Organization (Logo, Contacts, Social Profile)"){
+            org_values = [
+                {type:''},
+                {name:''},
+                {alt_name:''},
+                {url:''},
+                {logo_url:''},
+                {}
+            ];
+            org_cnt = 0;
+            schema_generator(9);
+        }
+        else if(e=="Local Business"){
+            local_values = [
+                {name:''},
+                {image_url:''},
+                {id_url:''},
+                {url:''},
+                {phone:''},
+                {price_range:''},
+                {street:''},
+                {city:''},
+                {zip_code:''},
+                {country_code:''},
+                {region_code:''},
+                {},
+                {}
+            ];
+            local_profile_cnt = 0;
+            local_opening_cnt = 0;
+            schema_generator(10);
+        }
+        else if(e=="Product (Offer, AggregateRating, Reviews)"){
+            product_values = [
+                {name:''},
+                {image_url:''},
+                {brand:''},
+                {description:''},
+                {sku:''},
+                {gtin8:''},
+                {gtin13:''},
+                {gtin14:''},
+                {aggregate_rating_value:''},
+                {number_of_ratings:''},
+                {highest_value_allowed:''},
+                {lowest_value_allowed:''},
+                {mpn:''},
+                {offer_type:''},
+                {url:''},
+                {currency_code:''},
+                {price:''},
+                {price_validity:''},
+                {condition:''},
+                {availability:''},
+                {low_price:''},
+                {high_price:''},
+                {no_of_offers:''},
+                {}
+            ];
+            product_cnt = 0;
+            document.getElementById("aggregate-div").style.display = 'none';
+            document.getElementById("offer-div").style.display = 'none';
+            schema_generator(11);
+        }
+        else if(e=="Recipe"){
+            recipe_values = [
+                {name:''},
+                {description:''},
+                {keywords:''},
+                {creator:''},
+                {},
+                {category:''},
+                {cuisine:''},
+                {servings:''},
+                {preparation:''},
+                {cooking:''},
+                {serving_size:''},
+                {calories:''},
+                {fat:''},
+                {},
+                {},
+                {video_content_url:''},
+                {video_embed_url:''},
+                {date_published:''},
+                {aggregate_rating_value:''},
+                {number_of_ratings:''},
+                {highest_value_allowed:''},
+                {lowest_value_allowed:''},
+                {}
+            ];
+             recipe_image_cnt = 0;
+             recipe_ingredients_cnt = 0;
+             recipe_reviews_cnt = 0;
+             recipe_steps_cnt = 0;
+            schema_generator(12);
+        }
+
+    }
+
+    const handleSchemaChange = (e)=>{
+        for(const i of all_panels){
+            const panel_div = document.getElementById(i);
+            panel_div.style.display = "none";
+        }
+
+        document.getElementById("panel-dropdown").innerHTML = e;
+        const panel_div = document.getElementById(e.split(' ')[0]);
+        panel_div.style.display = "block";
+
+        if(e=='Article'){
+            schema_generator(0);
+        }
+        else if(e=="Website-Sitelinks Searchbox"){
+            schema_generator(1);
+        }
+        else if(e=="FAQ-Page"){
+            schema_generator(2);
+        }
+        else if(e=="Person"){
+            schema_generator(3);
+        }
+        else if(e=="COVID-19-Special Announcement"){
+            schema_generator(4);
+        }
+        else if(e=="Video"){
+            schema_generator(5);
+        }
+        else if(e=="How-To"){
+            schema_generator(6);
+        }
+        else if(e=="Job Posting"){
+            console.log("ll")
+            schema_generator(7);
+        }
+        else if(e=="Event"){
+            schema_generator(8);
+        }
+        else if(e=="Organization (Logo, Contacts, Social Profile)"){
+            schema_generator(9);
+        }
+        else if(e=="Local Business"){
+            schema_generator(10);
+        }
+        else if(e=="Product (Offer, AggregateRating, Reviews)"){
+            document.getElementById("aggregate-div").style.display = 'none';
+            document.getElementById("offer-div").style.display = 'none';
+            schema_generator(11);
+        }
+        else if(e=="Recipe"){
+            schema_generator(12);
+        }
+
+    }
+
+    const removeInput = (parent_id,child_id)=>{
+        const parent = document.getElementById(parent_id);
+        const child = document.getElementById(child_id);
+        parent.removeChild(child);
+    }
+
+    const addFaqQuestion = ()=>{
+        let li = document.createElement('li');
+        li.setAttribute('id','faq-li-'+faq_cnt);
+
+        faq_values['faq-li-'+faq_cnt] = {"question":'','answer':''};
+
+        let li_div = document.createElement('div');
+        li_div.className = "faq-li-div";
+
+        let question_input = document.createElement('input');
+        question_input.setAttribute('id','faq-question');
+        question_input.setAttribute('class','form-control');
+        question_input.setAttribute("placeholder","Question");
+        question_input.addEventListener('keyup',(e)=>{
+            const id = question_input.parentNode.parentNode.id;
+            const faq_item = faq_values[id];
+            faq_item['question'] = e.target.value;
+            schema_generator(2);
+        });
+
+        let answer_input = document.createElement('input');
+        answer_input.setAttribute('id','faq-answer');
+        answer_input.setAttribute('class','form-control');
+        answer_input.setAttribute("placeholder","Answer");
+        answer_input.addEventListener('keyup',(e)=>{
+            const id = answer_input.parentNode.parentNode.id;
+            const faq_item = faq_values[id];
+            faq_item['answer'] = e.target.value;
+            schema_generator(2);
+        });
+
+        let delete_btn = document.createElement('button');
+        delete_btn.setAttribute('class','btn btn-primary delete-btn');
+        delete_btn.textContent = 'Remove';
+        delete_btn.addEventListener("click",(e)=>{
+            const id = answer_input.parentNode.parentNode.id;
+            const li_ele = delete_btn.parentNode.parentNode;
+
+            delete faq_values[id];
+
+            li_ele.parentNode.removeChild(li_ele);
+            schema_generator(2);
+        });
+
+        document.getElementById('faq-ul').appendChild(li);
+        li.appendChild(li_div);
+        li_div.appendChild(question_input);
+        li_div.appendChild(answer_input);
+        li_div.appendChild(delete_btn);
+
+        faq_cnt++;
+    }
+
+    const addThumbnail = ()=>{
+        let li = document.createElement('li');
+        li.setAttribute('id','video-li-'+video_cnt);
+
+        video_values[5]['video-li-'+video_cnt] = "";
+
+        let li_div = document.createElement('div');
+        li_div.className = "video-li-div";
+
+        let video_input = document.createElement('input');
+        video_input.setAttribute('id','video-input');
+        video_input.setAttribute('class','form-control');
+        video_input.setAttribute("placeholder","Thumbnail URL");
+        video_input.addEventListener('keyup',(e)=>{
+            const id = video_input.parentNode.parentNode.id;
+            video_values[5][id] = e.target.value;
+            
+            schema_generator(5);
+        });
+
+        let delete_btn = document.createElement('button');
+        delete_btn.setAttribute('class','btn btn-primary delete-btn');
+        delete_btn.textContent = 'Remove';
+        delete_btn.addEventListener("click",(e)=>{
+            const id = video_input.parentNode.parentNode.id;
+            const li_ele = delete_btn.parentNode.parentNode;
+
+            delete video_values[5][id];
+
+            li_ele.parentNode.removeChild(li_ele);
+            schema_generator(5);
+        });
+
+        document.getElementById('video-ul').appendChild(li);
+        li.appendChild(li_div);
+        li_div.appendChild(video_input);
+        li_div.appendChild(delete_btn);
+
+        video_cnt++;
+    }
+
+    const addOrgProfile = ()=>{
+        let li = document.createElement('li');
+        li.setAttribute('id','org-li-'+org_cnt);
+
+        org_values[5]['org-li-'+org_cnt] = "";
+
+        let li_div = document.createElement('div');
+        li_div.className = "org-li-div";
+
+        let profile_input = document.createElement('input');
+        profile_input.setAttribute('id','profile-input');
+        profile_input.setAttribute('class','form-control');
+        profile_input.setAttribute("placeholder","URL");
+        profile_input.addEventListener('keyup',(e)=>{
+            const id = profile_input.parentNode.parentNode.id;
+            org_values[5][id] = e.target.value;
+            
+            schema_generator(9);
+        });
+
+        let delete_btn = document.createElement('button');
+        delete_btn.setAttribute('class','btn btn-primary delete-btn');
+        delete_btn.textContent = 'Remove';
+        delete_btn.addEventListener("click",(e)=>{
+            const id = profile_input.parentNode.parentNode.id;
+            const li_ele = delete_btn.parentNode.parentNode;
+
+            delete org_values[5][id];
+
+            li_ele.parentNode.removeChild(li_ele);
+            schema_generator(9);
+        });
+
+        document.getElementById('org-ul').appendChild(li);
+        li.appendChild(li_div);
+        li_div.appendChild(profile_input);
+        li_div.appendChild(delete_btn);
+
+        org_cnt++;
+    }
+
+    const addLocalProfile = ()=>{
+        let li = document.createElement('li');
+        li.setAttribute('id','local-li-'+local_profile_cnt);
+
+        local_values[11]['local-li-'+local_profile_cnt] = "";
+        
+        let li_div = document.createElement('div');
+        li_div.className = "local-li-div";
+
+        let profile_input = document.createElement('input');
+        profile_input.setAttribute('id','profile-input');
+        profile_input.setAttribute('class','form-control');
+        profile_input.setAttribute("placeholder","URL");
+        profile_input.addEventListener('keyup',(e)=>{
+            const id = profile_input.parentNode.parentNode.id;
+            local_values[11][id] = e.target.value;
+            
+            schema_generator(10);
+        });
+
+        let delete_btn = document.createElement('button');
+        delete_btn.setAttribute('class','btn btn-primary delete-btn');
+        delete_btn.textContent = 'Remove';
+        delete_btn.addEventListener("click",(e)=>{
+            const id = profile_input.parentNode.parentNode.id;
+            const li_ele = delete_btn.parentNode.parentNode;
+
+            delete local_values[11][id];
+
+            li_ele.parentNode.removeChild(li_ele);
+            schema_generator(10);
+        });
+
+        document.getElementById('local-ul').appendChild(li);
+        li.appendChild(li_div);
+        li_div.appendChild(profile_input);
+        li_div.appendChild(delete_btn);
+
+        local_profile_cnt++;
+    }
+
+    const addProfile = ()=>{
+        let li = document.createElement('li');
+        li.setAttribute('id','local-li-'+local_profile_cnt);
+
+        local_values[11]['local-li-'+local_profile_cnt] = "";
+        
+        let li_div = document.createElement('div');
+        li_div.className = "local-li-div";
+
+        let profile_input = document.createElement('input');
+        profile_input.setAttribute('id','profile-input');
+        profile_input.setAttribute('class','form-control');
+        profile_input.setAttribute("placeholder","URL");
+        profile_input.addEventListener('keyup',(e)=>{
+            const id = profile_input.parentNode.parentNode.id;
+            local_values[11][id] = e.target.value;
+            
+            schema_generator(10);
+        });
+
+        let delete_btn = document.createElement('button');
+        delete_btn.setAttribute('class','btn btn-primary delete-btn');
+        delete_btn.textContent = 'Remove';
+        delete_btn.addEventListener("click",(e)=>{
+            const id = profile_input.parentNode.parentNode.id;
+            const li_ele = delete_btn.parentNode.parentNode;
+
+            delete local_values[11][id];
+
+            li_ele.parentNode.removeChild(li_ele);
+            schema_generator(10);
+        });
+
+        document.getElementById('local-ul').appendChild(li);
+        li.appendChild(li_div);
+        li_div.appendChild(profile_input);
+        li_div.appendChild(delete_btn);
+
+        local_profile_cnt++;
+    }
+
+    const addOpeningHours = ()=>{
+        let li = document.createElement('li');
+        li.setAttribute('id','profile-li-'+local_opening_cnt);
+        
+        local_values[12]['profile-li-'+local_opening_cnt] = {"opens_at":'','closes_at':'','days':{'monday':'','tuesday':'','wednesday':'','thursday':'','friday':'','saturday':'','sunday':''}};
+
+        let li_div = document.createElement('div');
+        li_div.className = "profile-li-div";
+
+        let profile_div = document.createElement('div');
+        profile_div.setAttribute('class','box');
+
+        let profile_open_input = document.createElement('input');
+        profile_open_input.setAttribute('id','profile-input');
+        profile_open_input.setAttribute('class','form-control');
+        profile_open_input.setAttribute('placeholder','Opens at');
+        profile_open_input.addEventListener('keyup',(e)=>{
+            const id = profile_div.parentNode.parentNode.id;
+            local_values[12][id]['opens_at'] = e.target.value;
+            
+            schema_generator(10);
+        });
+
+        let profile_close_input = document.createElement('input');
+        profile_close_input.setAttribute('id','profile-input');
+        profile_close_input.setAttribute('class','form-control');
+        profile_close_input.setAttribute('placeholder','Closes at');
+        profile_close_input.addEventListener('keyup',(e)=>{
+            const id = profile_div.parentNode.parentNode.id;
+            local_values[12][id]['closes_at'] = e.target.value;
+            
+            schema_generator(10);
+        });
+
+        profile_div.appendChild(profile_open_input);
+        profile_div.appendChild(profile_close_input);
+
+        let checkbox_div = document.createElement('div');
+        checkbox_div.setAttribute('class','check-div');
+        
+        let days = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+
+        for(const i of days){
+            let profile_div_checkbox = document.createElement('div');
+            profile_div_checkbox.setAttribute('class','form-check');
+
+            let profile_monday_input = document.createElement('input');
+            profile_monday_input.setAttribute('type','checkbox')
+            profile_monday_input.setAttribute('id','profile-li-'+local_opening_cnt+'-'+i);
+            profile_monday_input.setAttribute('class','form-check-input');
+            profile_monday_input.addEventListener('change',(e)=>{
+                const id = profile_div.parentNode.parentNode.id;
+                if(document.getElementById(id+'-'+i).checked){
+                    local_values[12][id]['days'][i] = true;
+                }
+                else{
+                    local_values[12][id]['days'][i] = false;
+                }
+                
+                schema_generator(10);
+            });
+            let label = document.createElement('label');
+            label.setAttribute('class','form-check-label');
+            label.setAttribute('for',i);
+            label.innerHTML = i;
+
+            profile_div_checkbox.appendChild(label);
+            profile_div_checkbox.appendChild(profile_monday_input);
+
+            checkbox_div.appendChild(profile_div_checkbox);
+        }
+        
+
+        let delete_btn = document.createElement('button');
+        delete_btn.setAttribute('class','btn btn-primary delete-btn');
+        delete_btn.textContent = 'Remove';
+        delete_btn.addEventListener("click",(e)=>{
+            const id = profile_div.parentNode.parentNode.id;
+            const li_ele = delete_btn.parentNode.parentNode;
+
+            delete local_values[12][id];
+
+            li_ele.parentNode.removeChild(li_ele);
+            schema_generator(10);
+        });
+
+        document.getElementById('local-ul1').appendChild(li);
+        li.appendChild(li_div);
+        li_div.appendChild(profile_div)
+        li_div.appendChild(checkbox_div);
+        li_div.appendChild(delete_btn);
+
+        local_opening_cnt++;
+    }
+
+    const addCovidArea = ()=>{
+        let li = document.createElement('li');
+        li.setAttribute('id','covid-li-'+covid_cnt);
+
+        covid_values[8]['covid-li-'+covid_cnt] = "";
+
+        let li_div = document.createElement('div');
+        li_div.className = "covid-li-div";
+
+        let covid_input = document.createElement('input');
+        covid_input.setAttribute('id','covid-input');
+        covid_input.setAttribute('class','form-control');
+        covid_input.setAttribute("placeholder","CA, San Francisco County");
+        covid_input.addEventListener('keyup',(e)=>{
+            const id = covid_input.parentNode.parentNode.id;
+            covid_values[8][id] = e.target.value;
+            schema_generator(4);
+        });
+
+        let delete_btn = document.createElement('button');
+        delete_btn.setAttribute('class','btn btn-primary delete-btn');
+        delete_btn.textContent = 'Remove';
+        delete_btn.addEventListener("click",(e)=>{
+            const id = covid_input.parentNode.parentNode.id;
+            const li_ele = delete_btn.parentNode.parentNode;
+
+            delete covid_values[8][id];
+
+            li_ele.parentNode.removeChild(li_ele);
+            schema_generator(4);
+        });
+
+        document.getElementById('covid-ul').appendChild(li);
+        li.appendChild(li_div);
+        li_div.appendChild(covid_input);
+        li_div.appendChild(delete_btn);
+
+        covid_cnt++;
+    }
+
+    const addSupply = ()=>{
+        let li = document.createElement('li');
+        li.setAttribute('id','how-supply-li-'+how_supply_cnt);
+
+        how_values[6]['how-supply-li-'+how_supply_cnt] = "";
+
+        let li_div = document.createElement('div');
+        li_div.className = "how-supply-li-div";
+
+        let how_supply_input = document.createElement('input');
+        how_supply_input.setAttribute('id','how-supply-input');
+        how_supply_input.setAttribute('class','form-control');
+        how_supply_input.setAttribute("placeholder","Supply");
+        how_supply_input.addEventListener('keyup',(e)=>{
+            const id = how_supply_input.parentNode.parentNode.id;
+            how_values[6][id] = e.target.value;
+            
+            schema_generator(6);
+        });
+
+        let delete_btn = document.createElement('button');
+        delete_btn.setAttribute('class','btn btn-primary delete-btn');
+        delete_btn.textContent = 'Remove';
+        delete_btn.addEventListener("click",(e)=>{
+            const id = how_supply_input.parentNode.parentNode.id;
+            const li_ele = delete_btn.parentNode.parentNode;
+
+            delete how_values[6][id];
+
+            li_ele.parentNode.removeChild(li_ele);
+            schema_generator(6);
+        });
+
+        document.getElementById('how-supply-ul').appendChild(li);
+        li.appendChild(li_div);
+        li_div.appendChild(how_supply_input);
+        li_div.appendChild(delete_btn);
+
+        how_supply_cnt++;
+    }
+
+    const addTool = ()=>{
+        let li = document.createElement('li');
+        li.setAttribute('id','how-tool-li-'+how_tool_cnt);
+
+        how_values[7]['how-tool-li-'+how_tool_cnt] = "";
+
+        let li_div = document.createElement('div');
+        li_div.className = "how-tool-li-div";
+
+        let how_tool_input = document.createElement('input');
+        how_tool_input.setAttribute('id','how-tool-input');
+        how_tool_input.setAttribute('class','form-control');
+        how_tool_input.setAttribute("placeholder","Tool");
+        how_tool_input.addEventListener('keyup',(e)=>{
+            const id = how_tool_input.parentNode.parentNode.id;
+            how_values[7][id] = e.target.value;
+            
+            schema_generator(6);
+        });
+
+        let delete_btn = document.createElement('button');
+        delete_btn.setAttribute('class','btn btn-primary delete-btn');
+        delete_btn.textContent = 'Remove';
+        delete_btn.addEventListener("click",(e)=>{
+            const id = how_tool_input.parentNode.parentNode.id;
+            const li_ele = delete_btn.parentNode.parentNode;
+
+            delete how_values[7][id];
+
+            li_ele.parentNode.removeChild(li_ele);
+            schema_generator(6);
+        });
+
+        document.getElementById('how-tool-ul').appendChild(li);
+        li.appendChild(li_div);
+        li_div.appendChild(how_tool_input);
+        li_div.appendChild(delete_btn);
+
+        how_tool_cnt++;
+    }
+
+    const addStep = ()=>{
+        let li = document.createElement('li');
+        li.setAttribute('id','how-step-li-'+how_step_cnt);
+
+        how_values[8]['how-step-li-'+how_step_cnt] = {"name":'','url':'','image':'','instructions':''};
+
+        let li_div = document.createElement('div');
+        li_div.className = "how-step-li-div";
+
+        let how_tool_name_input = document.createElement('input');
+        how_tool_name_input.setAttribute('id','how-step-input');
+        how_tool_name_input.setAttribute('class','form-control');
+        how_tool_name_input.setAttribute("placeholder","Name");
+        how_tool_name_input.addEventListener('keyup',(e)=>{
+            const id = how_tool_name_input.parentNode.parentNode.id;
+            how_values[8][id]['name'] = e.target.value;
+            
+            schema_generator(6);
+        });
+
+        let how_tool_url_input = document.createElement('input');
+        how_tool_url_input.setAttribute('id','how-step-input');
+        how_tool_url_input.setAttribute('class','form-control');
+        how_tool_url_input.setAttribute("placeholder","URL");
+        how_tool_url_input.addEventListener('keyup',(e)=>{
+            const id = how_tool_url_input.parentNode.parentNode.id;
+            how_values[8][id]['url'] = e.target.value;
+            
+            schema_generator(6);
+        });
+
+        let how_tool_image_input = document.createElement('input');
+        how_tool_image_input.setAttribute('id','how-step-input');
+        how_tool_image_input.setAttribute('class','form-control');
+        how_tool_image_input.setAttribute("placeholder","Image URL");
+        how_tool_image_input.addEventListener('keyup',(e)=>{
+            const id = how_tool_image_input.parentNode.parentNode.id;
+            how_values[8][id]['image'] = e.target.value;
+            
+            schema_generator(6);
+        });
+
+        let how_tool_instructions_input = document.createElement('textarea');
+        how_tool_instructions_input.setAttribute('id','how-step-input');
+        how_tool_instructions_input.setAttribute('class','form-control');
+        how_tool_instructions_input.setAttribute("placeholder","Add Instructions");
+        how_tool_instructions_input.addEventListener('keyup',(e)=>{
+            const id = how_tool_instructions_input.parentNode.parentNode.id;
+            how_values[8][id]['instructions'] = e.target.value;
+            
+            schema_generator(6);
+        });
+
+        let delete_btn = document.createElement('button');
+        delete_btn.setAttribute('class','btn btn-primary delete-btn');
+        delete_btn.textContent = 'Remove';
+        delete_btn.addEventListener("click",(e)=>{
+            const id = how_tool_instructions_input.parentNode.parentNode.id;
+            const li_ele = delete_btn.parentNode.parentNode;
+
+            delete how_values[8][id];
+
+            li_ele.parentNode.removeChild(li_ele);
+            schema_generator(6);
+        });
+
+        document.getElementById('how-step-ul').appendChild(li);
+        li.appendChild(li_div);
+        li_div.appendChild(how_tool_name_input);
+        li_div.appendChild(how_tool_url_input);
+        li_div.appendChild(how_tool_image_input);
+        li_div.appendChild(how_tool_instructions_input);
+        li_div.appendChild(delete_btn);
+
+        how_step_cnt++;
+    }
+
+    const addTicket = ()=>{
+        let li = document.createElement('li');
+        li.setAttribute('id','event-li-'+event_cnt);
+
+        event_values[16]['event-li-'+event_cnt] = {"name":'','price':'','url':'','availability':'','from':''};
+
+        let li_div = document.createElement('div');
+        li_div.className = "event-li-div";
+
+        let event_name_input = document.createElement('input');
+        event_name_input.setAttribute('id','event-li-input');
+        event_name_input.setAttribute('class','form-control');
+        event_name_input.setAttribute("placeholder","Name");
+        event_name_input.addEventListener('keyup',(e)=>{
+            const id = event_name_input.parentNode.parentNode.id;
+            event_values[16][id]['name'] = e.target.value;
+            
+            schema_generator(8);
+        });
+
+        let event_price_input = document.createElement('input');
+        event_price_input.setAttribute('id','event-li-input');
+        event_price_input.setAttribute('class','form-control');
+        event_price_input.setAttribute("placeholder","Price");
+        event_price_input.addEventListener('keyup',(e)=>{
+            const id = event_price_input.parentNode.parentNode.id;
+            event_values[16][id]['price'] = e.target.value;
+            
+            schema_generator(8);
+        });
+
+        let event_url_input = document.createElement('input');
+        event_url_input.setAttribute('id','event-li-input');
+        event_url_input.setAttribute('class','form-control');
+        event_url_input.setAttribute("placeholder","URL");
+        event_url_input.addEventListener('keyup',(e)=>{
+            const id = event_url_input.parentNode.parentNode.id;
+            event_values[16][id]['url'] = e.target.value;
+            
+            schema_generator(8);
+        });
+
+        let event_div = document.createElement('div');
+        event_div.setAttribute('class','box');
+
+        let event_availability_select = document.createElement('select');
+        event_availability_select.setAttribute('id','event-li-select');
+        event_availability_select.setAttribute('class','dropdown-toggle');
+
+        var array = ["In Stock","Sold Out","Pre Order"];
+        var values = ["InStock","SoldOut","PreOrder"];
+
+        for (var i = 0; i < array.length; i++) {
+            var option = document.createElement("option");
+            option.value = values[i];
+            option.text = array[i];
+            event_availability_select.appendChild(option);
+        }
+        event_availability_select.addEventListener('change',(e)=>{
+            const id = event_url_input.parentNode.parentNode.id;
+            event_values[16][id]['availability'] = e.target.value;
+            
+            schema_generator(8);
+        });
+
+        let event_from_input = document.createElement('input');
+        event_from_input.setAttribute('type','date');
+        event_from_input.setAttribute('id','event-li-input');
+        event_from_input.setAttribute('class','form-control');
+        event_from_input.addEventListener('change',(e)=>{
+            const id = event_url_input.parentNode.parentNode.id;
+            event_values[16][id]['from'] = e.target.value;
+            
+            schema_generator(8);
+        });
+
+        
+
+        let delete_btn = document.createElement('button');
+        delete_btn.setAttribute('class','btn btn-primary delete-btn');
+        delete_btn.textContent = 'Remove';
+        delete_btn.addEventListener("click",(e)=>{
+            const id = event_url_input.parentNode.parentNode.id;
+            const li_ele = delete_btn.parentNode.parentNode;
+
+            delete event_values[16][id];
+
+            li_ele.parentNode.removeChild(li_ele);
+            schema_generator(8);
+        });
+
+        document.getElementById('event-ul').appendChild(li);
+        li.appendChild(li_div);
+        li_div.appendChild(event_name_input);
+        li_div.appendChild(event_price_input);
+        li_div.appendChild(event_url_input);
+        event_div.appendChild(event_availability_select)
+        event_div.appendChild(event_from_input);
+        li_div.appendChild(event_div);
+        li_div.appendChild(delete_btn);
+
+        event_cnt++;
+    }
+
+    const addProductReview = ()=>{
+        let li = document.createElement('li');
+        li.setAttribute('id','product-li-'+product_cnt);
+
+        product_values[23]['product-li-'+product_cnt] = {"name":'','author':'','body':'','publisher':'','rating':'','date':''};
+
+        let li_div = document.createElement('div');
+        li_div.className = "product-li-div";
+
+        let product_div_1 = document.createElement('div');
+        product_div_1.setAttribute('class','box');
+
+        let product_name_input = document.createElement('input');
+        product_name_input.setAttribute('id','product-li-input');
+        product_name_input.setAttribute('class','form-control');
+        product_name_input.setAttribute("placeholder","Name");
+        product_name_input.addEventListener('keyup',(e)=>{
+            const id = product_div_1.parentNode.parentNode.id;
+            product_values[23][id]['name'] = e.target.value;
+            
+            schema_generator(11);
+        });
+
+        let product_author_input = document.createElement('input');
+        product_author_input.setAttribute('id','product-li-input');
+        product_author_input.setAttribute('class','form-control');
+        product_author_input.setAttribute("placeholder","Author");
+        product_author_input.addEventListener('keyup',(e)=>{
+            const id = product_div_1.parentNode.parentNode.id;
+            product_values[23][id]['author'] = e.target.value;
+            
+            schema_generator(11);
+        });
+
+        product_div_1.appendChild(product_name_input);
+        product_div_1.appendChild(product_author_input);
+
+        let product_div_2 = document.createElement('div');
+        product_div_2.setAttribute('class','box');
+
+        let product_body_input = document.createElement('input');
+        product_body_input.setAttribute('id','product-li-input');
+        product_body_input.setAttribute('class','form-control');
+        product_body_input.setAttribute("placeholder","Body");
+        product_body_input.addEventListener('keyup',(e)=>{
+            const id = product_div_2.parentNode.parentNode.id;
+            product_values[23][id]['body'] = e.target.value;
+            
+            schema_generator(11);
+        });
+
+        let product_publisher_input = document.createElement('input');
+        product_publisher_input.setAttribute('id','product-li-input');
+        product_publisher_input.setAttribute('class','form-control');
+        product_publisher_input.setAttribute("placeholder","Publisher");
+        product_publisher_input.addEventListener('keyup',(e)=>{
+            const id = product_div_2.parentNode.parentNode.id;
+            product_values[23][id]['publisher'] = e.target.value;
+            
+            schema_generator(11);
+        });
+
+        product_div_2.appendChild(product_body_input);
+        product_div_2.appendChild(product_publisher_input);
+
+        let product_div_3 = document.createElement('div');
+        product_div_3.setAttribute('class','box');
+
+        let product_rating_input = document.createElement('input');
+        product_rating_input.setAttribute('id','product-li-input');
+        product_rating_input.setAttribute('class','form-control');
+        product_rating_input.setAttribute("placeholder","Rating");
+        product_rating_input.addEventListener('keyup',(e)=>{
+            const id = product_div_3.parentNode.parentNode.id;
+            product_values[23][id]['rating'] = e.target.value;
+            
+            schema_generator(11);
+        });
+
+
+        let product_date_input = document.createElement('input');
+        product_date_input.setAttribute('type','date');
+        product_date_input.setAttribute('id','event-li-input');
+        product_date_input.setAttribute('class','form-control');
+        product_date_input.addEventListener('change',(e)=>{
+            const id = product_div_3.parentNode.parentNode.id;
+            product_values[23][id]['date'] = e.target.value;
+            
+            schema_generator(11);
+        });
+
+        product_div_3.appendChild(product_rating_input);
+        product_div_3.appendChild(product_date_input);
+
+        let delete_btn = document.createElement('button');
+        delete_btn.setAttribute('class','btn btn-primary delete-btn');
+        delete_btn.textContent = 'Remove';
+        delete_btn.addEventListener("click",(e)=>{
+            const id = product_div_3.parentNode.parentNode.id;
+            const li_ele = delete_btn.parentNode.parentNode;
+
+            delete product_values[23][id];
+
+            li_ele.parentNode.removeChild(li_ele);
+            schema_generator(11);
+        });
+
+        document.getElementById('product-ul').appendChild(li);
+        li.appendChild(li_div);
+        li_div.appendChild(product_div_1);
+        li_div.appendChild(product_div_2);
+        li_div.appendChild(product_div_3);
+        li_div.appendChild(delete_btn);
+
+        product_cnt++;
+    }
+
+    const addRecipeImages = ()=>{
+        let li = document.createElement('li');
+        li.setAttribute('id','recipe-li-'+recipe_image_cnt);
+
+        recipe_values[4]['recipe-li-'+recipe_image_cnt] = "";
+
+        let li_div = document.createElement('div');
+        li_div.className = "recipe-li-div";
+
+        let profile_input = document.createElement('input');
+        profile_input.setAttribute('id','recipe-input');
+        profile_input.setAttribute('class','form-control');
+        profile_input.setAttribute("placeholder","URL");
+        profile_input.addEventListener('keyup',(e)=>{
+            const id = profile_input.parentNode.parentNode.id;
+            recipe_values[4][id] = e.target.value;
+            
+            schema_generator(12);
+        });
+
+        let delete_btn = document.createElement('button');
+        delete_btn.setAttribute('class','btn btn-primary delete-btn');
+        delete_btn.textContent = 'Remove';
+        delete_btn.addEventListener("click",(e)=>{
+            const id = profile_input.parentNode.parentNode.id;
+            const li_ele = delete_btn.parentNode.parentNode;
+
+            delete recipe_values[4][id];
+
+            li_ele.parentNode.removeChild(li_ele);
+            schema_generator(12);
+        });
+
+        document.getElementById('recipe-images-ul').appendChild(li);
+        li.appendChild(li_div);
+        li_div.appendChild(profile_input);
+        li_div.appendChild(delete_btn);
+
+        recipe_image_cnt++;
+    }
+
+    const addRecipeSteps = ()=>{
+        let li = document.createElement('li');
+        li.setAttribute('id','recipe-li-'+recipe_steps_cnt);
+
+        recipe_values[13]['recipe-li-'+recipe_steps_cnt] = "";
+
+        let li_div = document.createElement('div');
+        li_div.className = "recipe-li-div";
+
+        let profile_input = document.createElement('input');
+        profile_input.setAttribute('id','recipe-input');
+        profile_input.setAttribute('class','form-control');
+        profile_input.setAttribute("placeholder","Instruction");
+        profile_input.addEventListener('keyup',(e)=>{
+            const id = profile_input.parentNode.parentNode.id;
+            recipe_values[13][id] = e.target.value;
+            
+            schema_generator(12);
+        });
+
+        let delete_btn = document.createElement('button');
+        delete_btn.setAttribute('class','btn btn-primary delete-btn');
+        delete_btn.textContent = 'Remove';
+        delete_btn.addEventListener("click",(e)=>{
+            const id = profile_input.parentNode.parentNode.id;
+            const li_ele = delete_btn.parentNode.parentNode;
+
+            delete recipe_values[13][id];
+
+            li_ele.parentNode.removeChild(li_ele);
+            schema_generator(12);
+        });
+
+        document.getElementById('recipe-steps-ul').appendChild(li);
+        li.appendChild(li_div);
+        li_div.appendChild(profile_input);
+        li_div.appendChild(delete_btn);
+
+        recipe_steps_cnt++;
+    }
+
+    const addRecipeIngredients = ()=>{
+        let li = document.createElement('li');
+        li.setAttribute('id','recipe-li-'+recipe_ingredients_cnt);
+
+        recipe_values[14]['recipe-li-'+recipe_ingredients_cnt] = "";
+
+        let li_div = document.createElement('div');
+        li_div.className = "recipe-li-div";
+
+        let profile_input = document.createElement('input');
+        profile_input.setAttribute('id','recipe-input');
+        profile_input.setAttribute('class','form-control');
+        profile_input.setAttribute("placeholder","Ingredient");
+        profile_input.addEventListener('keyup',(e)=>{
+            const id = profile_input.parentNode.parentNode.id;
+            recipe_values[14][id] = e.target.value;
+            
+            schema_generator(12);
+        });
+
+        let delete_btn = document.createElement('button');
+        delete_btn.setAttribute('class','btn btn-primary delete-btn');
+        delete_btn.textContent = 'Remove';
+        delete_btn.addEventListener("click",(e)=>{
+            const id = profile_input.parentNode.parentNode.id;
+            const li_ele = delete_btn.parentNode.parentNode;
+
+            delete recipe_values[14][id];
+
+            li_ele.parentNode.removeChild(li_ele);
+            schema_generator(12);
+        });
+
+        document.getElementById('recipe-ingredient-ul').appendChild(li);
+        li.appendChild(li_div);
+        li_div.appendChild(profile_input);
+        li_div.appendChild(delete_btn);
+
+        recipe_ingredients_cnt++;
+    }
+
+    const addRecipeReviews = ()=>{
+        let li = document.createElement('li');
+        li.setAttribute('id','recipe-li-'+recipe_reviews_cnt);
+
+        recipe_values[22]['recipe-li-'+recipe_reviews_cnt] = {"name":'','author':'','body':'','publisher':'','rating':'','date':''};
+
+        let li_div = document.createElement('div');
+        li_div.className = "recipe-li-div";
+
+        let product_div_1 = document.createElement('div');
+        product_div_1.setAttribute('class','box');
+
+        let product_name_input = document.createElement('input');
+        product_name_input.setAttribute('id','recipe-li-input');
+        product_name_input.setAttribute('class','form-control');
+        product_name_input.setAttribute("placeholder","Name");
+        product_name_input.addEventListener('keyup',(e)=>{
+            const id = product_div_1.parentNode.parentNode.id;
+            recipe_values[22][id]['name'] = e.target.value;
+            
+            schema_generator(12);
+        });
+
+        let product_author_input = document.createElement('input');
+        product_author_input.setAttribute('id','recipe-li-input');
+        product_author_input.setAttribute('class','form-control');
+        product_author_input.setAttribute("placeholder","Author");
+        product_author_input.addEventListener('keyup',(e)=>{
+            const id = product_div_1.parentNode.parentNode.id;
+            recipe_values[22][id]['author'] = e.target.value;
+            
+            schema_generator(12);
+        });
+
+        product_div_1.appendChild(product_name_input);
+        product_div_1.appendChild(product_author_input);
+
+        let product_div_2 = document.createElement('div');
+        product_div_2.setAttribute('class','box');
+
+        let product_body_input = document.createElement('input');
+        product_body_input.setAttribute('id','recipe-li-input');
+        product_body_input.setAttribute('class','form-control');
+        product_body_input.setAttribute("placeholder","Body");
+        product_body_input.addEventListener('keyup',(e)=>{
+            const id = product_div_2.parentNode.parentNode.id;
+            recipe_values[22][id]['body'] = e.target.value;
+            
+            schema_generator(12);
+        });
+
+        let product_publisher_input = document.createElement('input');
+        product_publisher_input.setAttribute('id','recipe-li-input');
+        product_publisher_input.setAttribute('class','form-control');
+        product_publisher_input.setAttribute("placeholder","Publisher");
+        product_publisher_input.addEventListener('keyup',(e)=>{
+            const id = product_div_2.parentNode.parentNode.id;
+            recipe_values[22][id]['publisher'] = e.target.value;
+            
+            schema_generator(12);
+        });
+
+        product_div_2.appendChild(product_body_input);
+        product_div_2.appendChild(product_publisher_input);
+
+        let product_div_3 = document.createElement('div');
+        product_div_3.setAttribute('class','box');
+
+        let product_rating_input = document.createElement('input');
+        product_rating_input.setAttribute('id','recipe-li-input');
+        product_rating_input.setAttribute('class','form-control');
+        product_rating_input.setAttribute("placeholder","Rating");
+        product_rating_input.addEventListener('keyup',(e)=>{
+            const id = product_div_3.parentNode.parentNode.id;
+            recipe_values[22][id]['rating'] = e.target.value;
+            
+            schema_generator(12);
+        });
+
+
+        let product_date_input = document.createElement('input');
+        product_date_input.setAttribute('type','date');
+        product_date_input.setAttribute('id','event-li-input');
+        product_date_input.setAttribute('class','form-control');
+        product_date_input.addEventListener('change',(e)=>{
+            const id = product_div_3.parentNode.parentNode.id;
+            recipe_values[22][id]['date'] = e.target.value;
+            
+            schema_generator(12);
+        });
+
+        product_div_3.appendChild(product_rating_input);
+        product_div_3.appendChild(product_date_input);
+
+        let delete_btn = document.createElement('button');
+        delete_btn.setAttribute('class','btn btn-primary delete-btn');
+        delete_btn.textContent = 'Remove';
+        delete_btn.addEventListener("click",(e)=>{
+            const id = product_div_3.parentNode.parentNode.id;
+            const li_ele = delete_btn.parentNode.parentNode;
+
+            delete recipe_values[22][id];
+
+            li_ele.parentNode.removeChild(li_ele);
+            schema_generator(12);
+        });
+
+        document.getElementById('recipe-review-ul').appendChild(li);
+        li.appendChild(li_div);
+        li_div.appendChild(product_div_1);
+        li_div.appendChild(product_div_2);
+        li_div.appendChild(product_div_3);
+        li_div.appendChild(delete_btn);
+
+        recipe_reviews_cnt++;
+    }
+
+
+    const isDigit = (chr)=>{
+      return  chr.match(/[0-9]/i);
+    }
+
+    const urlValidation = (ele_id,value,input_id)=>{
+        const span = document.getElementById(ele_id);
+        var pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if(value==""){
+            span.style.display = 'none';
+            const class_name = document.getElementById(input_id).className.split(" ")[0];
+            document.getElementById(input_id).className = class_name;
+        }
+        else{
+            if(value.match(pattern)){
+                span.style.display = 'none';
+                const class_name = document.getElementById(input_id).className.split(" ")[0];
+                document.getElementById(input_id).className = class_name;
+            }
+            else{
+                span.style.display = 'block';
+                document.getElementById(input_id).className += " error"
+            }
+        }
+        
+    }
+
+    const handleWebsiteChange = (e="",id,value)=>{
+        if(id==0){
+            website_values[id][Object.keys(website_values[id])[0]] = value;
+        }
+        else if(id==1){
+            website_values[id][Object.keys(website_values[id])[0]] = value;
+            urlValidation("website-url-validation",value,'website-url');
+        }
+        else if(id==2){
+            website_values[id][Object.keys(website_values[id])[0]] = value;
+            urlValidation("website-search-url-validation",value,'website-search-url');
+        }
+        schema_generator(1);
+    }
+
+    const handleHowChange = (e="",id,value)=>{
+        if(id==0){
+            how_values[id][Object.keys(how_values[id])[0]] = value;
+        }
+        else if(id==1){
+            how_values[id][Object.keys(how_values[id])[0]] = value;
+        }
+        else if(id==2){
+            how_values[id][Object.keys(how_values[id])[0]] = value;
+        }
+        else if(id==3){
+            how_values[id][Object.keys(how_values[id])[0]] = value;
+        }
+        else if(id==4){
+            how_values[id][Object.keys(how_values[id])[0]] = value;
+        }
+        else if(id==5){
+            how_values[id][Object.keys(how_values[id])[0]] = value;
+            urlValidation("how-image-url-validation",value,'how-image-url');
+        }
+        schema_generator(6);
+    }
+
+    const handleVideoChange = (e="",id,value)=>{
+        if(id==0){
+            video_values[id][Object.keys(video_values[id])[0]] = value;
+        }
+        else if(id==1){
+            video_values[id][Object.keys(video_values[id])[0]] = value;
+        }
+        else if(id==2){
+            video_values[id][Object.keys(video_values[id])[0]] = value;
+        }
+        else if(id==3){
+            video_values[id][Object.keys(video_values[id])[0]] = value;
+        }
+        else if(id==4){
+            video_values[id][Object.keys(video_values[id])[0]] = value;
+        }
+        else if(id==6){
+            video_values[id][Object.keys(video_values[id])[0]] = value;
+            urlValidation("video-content-url-validation",value,'video-content-url');
+        }
+        else if(id==7){
+            video_values[id][Object.keys(video_values[id])[0]] = value;
+            urlValidation("video-embed-url-validation",value,'video-embed-url');
+        }
+        else if(id==8){
+            video_values[id][Object.keys(video_values[id])[0]] = value;
+        }
+        else if(id==9){
+            video_values[id][Object.keys(video_values[id])[0]] = value;
+            urlValidation("video-logo-url-validation",value,'video-logo-url');
+        }
+        else if(id==10){
+            video_values[id][Object.keys(video_values[id])[0]] = value;
+            if(value>600 || !isDigit(value)){
+                document.getElementById('video-publisher-logo-width').className += " error"
+            }
+            else{
+                const class_name = document.getElementById('video-publisher-logo-width').className.split(" ")[0];
+                document.getElementById('video-publisher-logo-width').className = class_name;
+            }
+        }
+        else if(id==11){
+            video_values[id][Object.keys(video_values[id])[0]] = value;
+            if(value>60 || !isDigit(value)){
+                document.getElementById('video-publisher-logo-height').className += " error"
+            }
+            else{
+                const class_name = document.getElementById('video-publisher-logo-height').className.split(" ")[0];
+                document.getElementById('video-publisher-logo-height').className = class_name;
+            }
+        }
+        schema_generator(5);
+    }
+
+    const handlePersonChange = (e="",id,value)=>{
+        if(id==0){
+            person_values[id][Object.keys(person_values[id])[0]] = value;
+        }
+        else if(id==1){
+            person_values[id][Object.keys(person_values[id])[0]] = value;
+            urlValidation("person-url-validation",value,'person-url');
+        }
+        else if(id==2){
+            person_values[id][Object.keys(person_values[id])[0]] = value;
+            urlValidation("person-image-url-validation",value,'person-image-url');
+        }
+        else if(id==3){
+            person_values[id][Object.keys(person_values[id])[0]] = value;
+        }
+        else if(id==4){
+            person_values[id][Object.keys(person_values[id])[0]] = value;
+        }
+        schema_generator(3);
+    }
+
+    const validateHhMm = (val,inp_id) => {
+        var isValid = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(val);
+
+        if (isValid) {
+            const class_name = document.getElementById(inp_id).className.split(" ")[0];
+            document.getElementById(inp_id).className = class_name;
+        } else {
+            document.getElementById(inp_id).className += " error"
+        }
+    }
+
+    const handleCovidChange = (e="",id,value)=>{
+        if(id==0){
+            covid_values[id][Object.keys(covid_values[id])[0]] = value;
+        }
+        else if(id==1){
+            covid_values[id][Object.keys(covid_values[id])[0]] = value;
+        }
+        else if(id==2){
+            covid_values[id][Object.keys(covid_values[id])[0]] = value;
+        }
+        else if(id==3){
+            covid_values[id][Object.keys(covid_values[id])[0]] = value;
+        }
+        else if(id==4){
+            covid_values[id][Object.keys(covid_values[id])[0]] = value;
+        }
+        else if(id==5){
+            validateHhMm(value,'time-posted-input')
+            covid_values[id][Object.keys(covid_values[id])[0]] = value;
+        }
+        else if(id==6){
+            covid_values[id][Object.keys(covid_values[id])[0]] = value;
+        }
+        else if(id==7){
+            validateHhMm(value,'time-expire-input')
+            covid_values[id][Object.keys(covid_values[id])[0]] = value;
+        }
+        schema_generator(4);
+    }
+
+    const handleJobChange = (e="",id,value)=>{
+        if(id==0){
+            job_values[id][Object.keys(job_values[id])[0]] = value;
+        }
+        else if(id==1){
+            job_values[id][Object.keys(job_values[id])[0]] = value;
+        }
+        else if(id==2){
+            job_values[id][Object.keys(job_values[id])[0]] = value;
+        }
+        else if(id==3){
+            job_values[id][Object.keys(job_values[id])[0]] = value;
+        }
+        else if(id==4){
+            job_values[id][Object.keys(job_values[id])[0]] = value;
+            urlValidation("job-company-url-validation",value,'job-company-url');
+        }
+        else if(id==5){
+            job_values[id][Object.keys(job_values[id])[0]] = value;
+        }
+        else if(id==6){
+            job_values[id][Object.keys(job_values[id])[0]] = value;
+            document.getElementById("job-type-dropdown").innerHTML = e;
+        }
+        else if(id==7){
+            job_values[id][Object.keys(job_values[id])[0]] = value;
+        }
+        else if(id==8){
+            job_values[id][Object.keys(job_values[id])[0]] = value;
+        }
+        else if(id==9){
+            job_values[id][Object.keys(job_values[id])[0]] = value;
+        }
+        else if(id==10){
+            job_values[id][Object.keys(job_values[id])[0]] = value;
+        }
+        else if(id==11){
+            job_values[id][Object.keys(job_values[id])[0]] = value;
+        }
+        else if(id=='check'){
+            if(document.getElementById('flexCheckDefault').checked){
+                document.getElementById('address').style.display = 'none';
+                job_values[12].street = '';
+                job_values[13].city = '';
+                job_values[14].zip_code = '';
+            }
+            else{
+                document.getElementById('address').style.display = 'block';
+            }
+        }
+        else if(id==12 || id==13 || id==14 || id==15 || id==16 || id==17 || id==18 || id==19 || id==20 || id==21 || id==22 ){
+            job_values[id][Object.keys(job_values[id])[0]] = value;
+        }
+
+        schema_generator(7);
+    }
+
+    const handleEventChange = (e="",id,value)=>{
+        if(id==0 || id==1){
+            event_values[id][Object.keys(event_values[id])[0]] = value;
+        }
+        else if(id==2){
+            event_values[id][Object.keys(event_values[id])[0]] = value;
+            urlValidation("event-image-url-validation",value,'event-image-url');
+        }
+        else if(id==3){
+            event_values[id][Object.keys(event_values[id])[0]] = value;
+        }
+        else if(id==4){
+            validateHhMm(value,'event-start-input')
+            event_values[id][Object.keys(event_values[id])[0]] = value;   
+        }
+        else if(id==5){
+            event_values[id][Object.keys(event_values[id])[0]] = value;
+        }
+        else if(id==6){
+            validateHhMm(value,'event-end-input')
+            event_values[id][Object.keys(event_values[id])[0]] = value;
+        }
+        else if(id==7){
+            event_values[id][Object.keys(event_values[id])[0]] = value;
+            document.getElementById("event-performer-dropdown").innerHTML = e;
+        }
+        else if(id==8){
+            event_values[id][Object.keys(event_values[id])[0]] = value;
+        }
+        else if(id==9){
+            event_values[id][Object.keys(event_values[id])[0]] = value;
+        }
+        else if(id==10){
+            event_values[id][Object.keys(event_values[id])[0]] = value;
+        }
+        else if(id==11){
+            event_values[id][Object.keys(event_values[id])[0]] = value;
+        }
+        else if(id==12 || id==13 || id==14 || id==15){
+            event_values[id][Object.keys(event_values[id])[0]] = value;
+        }
+
+        schema_generator(8);
+    }
+
+    const handleOrgChange = (e="",id,value)=>{
+        if(id==0){
+            document.getElementById("org-dropdown").innerHTML = e;
+            org_values[id][Object.keys(org_values[id])[0]] = value;
+        }
+        else if(id==1 || id==2){
+            org_values[id][Object.keys(org_values[id])[0]] = value;
+        }
+        else if(id==3){
+            org_values[id][Object.keys(org_values[id])[0]] = value;
+            urlValidation("org-url-validation",value,'org-url');
+        }
+        else if(id==4){
+            org_values[id][Object.keys(org_values[id])[0]] = value;
+            urlValidation("org-logo-url-validation",value,'org-logo-url');
+        }
+            
+        schema_generator(9);
+        
+    }
+
+    const handleLocalChange = (e="",id,value)=>{
+        if(id==0){
+            local_values[id][Object.keys(local_values[id])[0]] = value;
+        }
+        else if(id==1){
+            local_values[id][Object.keys(local_values[id])[0]] = value;
+            urlValidation("local-image-url-validation",value,'local-image-url');
+        }
+        else if(id==2){
+            local_values[id][Object.keys(local_values[id])[0]] = value;
+            urlValidation("local-id-url-validation",value,'local-id-url');
+        }
+        else if(id==3){
+            local_values[id][Object.keys(local_values[id])[0]] = value;
+            urlValidation("local-url-validation",value,'local-url');
+        }
+        else if(id==4 || id==5 || id==6 || id==7 || id==8 || id==9 || id==10){
+            local_values[id][Object.keys(local_values[id])[0]] = value;
+        }
+
+        else if(id=='check'){
+            if(document.getElementById('flexCheckDefault-1').checked){
+                document.getElementById('open-hours').style.display = 'none';
+            }
+            else{
+                document.getElementById('open-hours').style.display = 'block';
+            }
+        }
+            
+        schema_generator(10);
+        
+    }
+
+    const handleProductChange = (e="",id,value)=>{
+        if(id==0){
+            product_values[id][Object.keys(product_values[id])[0]] = value;
+        }
+        else if(id==1){
+            product_values[id][Object.keys(product_values[id])[0]] = value;
+            urlValidation("product-image-url-validation",value,'product-image-url');
+        }
+        else if(id==2 || id==3 || id==4 || id==5 || id==6 || id==7 || id==8 || id==9 || id==10 || id==11 || id==12){
+            product_values[id][Object.keys(product_values[id])[0]] = value;
+        }
+        if(id==13){
+            document.getElementById("offer-dropdown").innerHTML = e;
+            product_values[id][Object.keys(product_values[id])[0]] = value;
+            if(e=='Offer'){
+                document.getElementById("offer-div").style.display = 'block';
+                document.getElementById("aggregate-div").style.display = 'none';
+            }
+            else if(e=='AggregateOffer'){
+                document.getElementById("offer-div").style.display = 'none';
+                document.getElementById("aggregate-div").style.display = 'block';
+            }
+            else{
+                product_values[id][Object.keys(product_values[id])[0]] = '';
+                document.getElementById("aggregate-div").style.display = 'none';
+                document.getElementById("offer-div").style.display = 'none';
+            }
+        }
+        else if(id==14){
+            product_values[id][Object.keys(product_values[id])[0]] = value;
+            urlValidation("product-url-validation",value,'product-url');
+        }
+        else if(id==15 || id==16 || id==17 || id==20 || id==21 || id==22){
+            product_values[id][Object.keys(product_values[id])[0]] = value;
+        }
+        else if(id==18){
+            document.getElementById("used-dropdown").innerHTML = e;
+            if(e=='None'){
+                product_values[id][Object.keys(product_values[id])[0]] = '';
+            }
+            else{
+                product_values[id][Object.keys(product_values[id])[0]] = value;
+            }
+        }
+        else if(id==19){
+            document.getElementById("availability-dropdown").innerHTML = e;
+            if(e=='None'){
+                product_values[id][Object.keys(product_values[id])[0]] = '';
+            }
+            else{
+                product_values[id][Object.keys(product_values[id])[0]] = value;
+            }
+        }
+        schema_generator(11);
+        
+    }
+
+    const handleRecipeChange = (e="",id,value)=>{
+        if(id==0 || id==1 || id==2 || id==3){
+            recipe_values[id][Object.keys(recipe_values[id])[0]] = value;
+        }
+        else if(id==5){
+            document.getElementById("recipe-category-dropdown").innerHTML = e;
+            if(e=='None'){
+                recipe_values[id][Object.keys(recipe_values[id])[0]] = '';
+            }
+            else{
+                recipe_values[id][Object.keys(recipe_values[id])[0]] = value;
+            }
+        }
+        else if(id==6 || id==7 || id==8 || id==9 || id==10 || id==11 || id==12){
+            recipe_values[id][Object.keys(recipe_values[id])[0]] = value;
+        }
+        else if(id==15){
+            recipe_values[id][Object.keys(recipe_values[id])[0]] = value;
+            urlValidation("recipe-content-url-validation",value,'recipe-content-url');
+        }
+        else if(id==16){
+            recipe_values[id][Object.keys(recipe_values[id])[0]] = value;
+            urlValidation("recipe-embed-url-validation",value,'recipe-embed-url');
+        }
+        else if(id==17 || id==18 || id==19 || id==20 || id==21){
+            recipe_values[id][Object.keys(recipe_values[id])[0]] = value;
+        }
+        
+        schema_generator(12);
+        
+    }
+
+    const handleArticleChange = (e="",id,value)=>{
+        if(id==0){
+            document.getElementById("article-dropdown").innerHTML = e;
+            article_values[id][Object.keys(article_values[id])[0]] = value;
+        }
+        else if(id==1){
+            article_values[id][Object.keys(article_values[id])[0]] = value;
+            urlValidation("url-validation",value,'headline-url');
+        }
+        else if(id==2){
+            article_values[id][Object.keys(article_values[id])[0]] = value;
+            document.getElementById('char-counter').innerHTML = value.length;
+            if(value.length>110){
+                document.getElementById('char-counter').style.color = 'red';
+                document.getElementById('headline-input').className += " error"
+            }
+            else{
+                document.getElementById('char-counter').style.color = 'rgb(133, 133, 133)';
+                const class_name = document.getElementById('headline-input').className.split(" ")[0];
+                document.getElementById('headline-input').className = class_name;
+
+            }
+        }
+        else if(id==3){
+            article_values[id][Object.keys(article_values[id])[0]] = value;
+        }
+        else if(id==4){
+            article_values[id][Object.keys(article_values[id])[0]] = value;
+            urlValidation("image-url-validation",value,'image-url');
+        }
+        else if(id==5){
+            article_values[id][Object.keys(article_values[id])[0]] = value;
+            if(value<696 || !isDigit(value)){
+                document.getElementById('image-width').className += " error"
+            }
+            else{
+                const class_name = document.getElementById('image-width').className.split(" ")[0];
+                document.getElementById('image-width').className = class_name;
+            }
+        }
+        else if(id==6){
+            article_values[id][Object.keys(article_values[id])[0]] = value;
+            if(!isDigit(value)){
+                document.getElementById('image-height').className += " error"
+            }
+            else{
+                const class_name = document.getElementById('image-height').className.split(" ")[0];
+                document.getElementById('image-height').className = class_name;
+            }
+        }
+        else if(id==7){
+            article_values[id][Object.keys(article_values[id])[0]] = value;
+        }
+        else if(id==8){
+            article_values[id][Object.keys(article_values[id])[0]] = value;
+        }
+        else if(id==9){
+            article_values[id][Object.keys(article_values[id])[0]] = value;
+            urlValidation("publisher-logo-url-validation",value,'publisher-logo');
+        }
+        else if(id==10){
+            article_values[id][Object.keys(article_values[id])[0]] = value;
+            if(value>600 || !isDigit(value)){
+                document.getElementById('publisher-logo-width').className += " error"
+            }
+            else{
+                const class_name = document.getElementById('publisher-logo-width').className.split(" ")[0];
+                document.getElementById('publisher-logo-width').className = class_name;
+            }
+        }
+        else if(id==11){
+            article_values[id][Object.keys(article_values[id])[0]] = value;
+            if(value>60 || !isDigit(value)){
+                document.getElementById('publisher-logo-height').className += " error"
+            }
+            else{
+                const class_name = document.getElementById('publisher-logo-height').className.split(" ")[0];
+                document.getElementById('publisher-logo-height').className = class_name;
+            }
+        }
+        else if(id==12){
+            article_values[id][Object.keys(article_values[id])[0]] = value;
+        }
+        else if(id==13){
+            article_values[id][Object.keys(article_values[id])[0]] = value;
+        }
+        
+        schema_generator(0);
+        
+    }
+    
+    const copy_code = ()=> {
+        var copyText = document.getElementById("content");
+        let text = copyText.innerText;
+        navigator.clipboard.writeText(text)     
+    }
+
+    const schema_generator = (id)=>{
+        if(id==0){
+            let article_string = '<pre><span style="color:#EAB308">&#60;script</span> <span style="color:#E80F88"> type="application/ld+json"</span><span style="color:#EAB308">></span>\r\n{\n  "@context": "https://schema.org/",\r\n  "@type":'+'"'+article_values[0].article_type+'",\n';
+            let url_part = '  "mainEntityOfPage": {\n    "@type": "WebPage",\n    "@id":'+'"'+article_values[1].url+'"'+'\n  },\r\n';
+            let desc_part = '  "description": '+'"'+article_values[3].description+'"'+',\n'
+            let second_part = '  "headline": '+'"'+article_values[2].headline+'"'+',\n  "image": {\n    "@type": "ImageObject",\n    "url": '+'"'+article_values[4].image_url+'"'+',\n    "width": '+'"'+article_values[5].image_width+'"'+',\n    "height": '+'"'+article_values[6].image_height+'"'+'\n  },\n  "author": {\n    "@type": "Person",\n    "name": '+'"'+article_values[7].author_name+'"'+'\n  },\n  "publisher": {\n    "@type": "Organization",\n    "name": '+'"'+article_values[8].publisher_name+'"'+',\n    "logo": {\n      "@type": "ImageObject",\n      "url": '+'"'+article_values[9].publisher_logo_url+'"'+',\n      "width": '+'"'+article_values[10].publisher_logo_width+'"'+',\n      "height": '+'"'+article_values[11].publisher_logo_height+'"'+'\n    }\n  },\n  "datePublished": '+'"'+article_values[12].date_published+'"';
+            let modified_part = ',\n"dateModified": '+'"'+article_values[13].date_modified+'"'
+
+            if(article_values[1].url!=''){
+                article_string+=url_part;
+            }
+            if(article_values[3].description!=''){
+                article_string+=desc_part;
+            }
+            if(article_values[13].date_modified!=''){
+                article_string+=second_part+modified_part+'\n}\n&#60;/script&#62;</pre>';
+            }
+            else{
+                article_string+=second_part+'\n}\n<span style="color:#EAB308">&#60;/script&#62;</span></pre>';
+            }
+            document.getElementById("content").innerHTML = article_string;
+        }
+    
+        else if(id==1){
+            let website_string = '<pre><span style="color:#EAB308">&#60;script</span> <span style="color:#E80F88"> type="application/ld+json"</span><span style="color:#EAB308">></span>\r\n{\n  "@context": "https://schema.org/",\n  "@type": "WebSite",\n  "name": '+'"'+website_values[0].website_name+'"'+',\n  "url": '+'"'+website_values[1].url+'"'+',\n  "potentialAction": {\n    "@type": "SearchAction",\n    "target": "'+website_values[2].search_url+'{search_term_string}",\n    "query-input": "required name=search_term_string"\n }\n}\n<span style="color:#EAB308">&#60;/script&#62;</span></pre>';
+            document.getElementById("content").innerHTML = website_string;
+        }
+
+        else if(id==2){
+            let faq_string = '<pre><span style="color:#EAB308">&#60;script</span> <span style="color:#E80F88"> type="application/ld+json"</span><span style="color:#EAB308">></span>\n{\n  "@context": "https://schema.org/",\n  "@type": "FAQPage"';
+            if(Object.keys(faq_values).length!=0){
+                faq_string+=',\n  "mainEntity": [';
+            }
+            let dict_str='';
+            for(const i in faq_values){
+                dict_str += '\n   {\n    "@type": "Question",\n    "name": '+'"'+faq_values[i]['question']+'"'+',\n    "acceptedAnswer": {\n      "@type": "Answer",\n      "text": '+'"'+faq_values[i]['answer']+'"'+'\n     }\n    },';
+            }
+            if(Object.keys(faq_values).length!=0){
+                let s = dict_str.slice(0,-1);
+                faq_string += s +'\n   ]\n }\n&#60;/script&#62;</pre>;'
+            }
+            else{
+                faq_string+='\n}\n<span style="color:#EAB308">&#60;/script&#62;</span></pre>'
+            }
+                 
+            document.getElementById("content").innerHTML = faq_string;
+        }
+
+        else if(id==3){
+            let person_string = '<pre><span style="color:#EAB308">&#60;script</span> <span style="color:#E80F88"> type="application/ld+json"</span><span style="color:#EAB308">></span>\n{\n  "@context": "https://schema.org/",\n  "@type": "Person"';
+            if(person_values[0].name!=''){
+                person_string+=',\n  "name": '+'"'+person_values[0].name+'"';
+            }
+            if(person_values[1].url!=''){
+                person_string+=',\n  "url": '+'"'+person_values[1].url+'"';
+            }
+            if(person_values[2].image_url!=''){
+                person_string+=',\n  "image": '+'"'+person_values[2].image_url+'"';
+            }
+            if(person_values[3].job_title!=''){
+                person_string+=',\n  "jobTitle": '+'"'+person_values[3].job_title+'"';
+            }
+            if(person_values[4].company!=''){
+                person_string+=',\n  "worksFor": {\n    "@type": "Organization",\n    "name": '+'"'+person_values[4].company+'"'+'\n   }';
+            }
+
+            if(Object.keys(person_values[5]).length!=0){
+                person_string+=',\n  "sameAs": [';
+            }
+            let dict_str='';
+            for(const i in person_values[5]){
+                dict_str += '\n    "name": '+'"'+person_values[5][i]+'"'+',';
+            }
+            if(Object.keys(person_values[5]).length!=0){
+                let s = dict_str.slice(0,-1);
+                person_string += s +'\n   ]\n }\n<span style="color:#EAB308">&#60;/script&#62;</span></pre>'
+            }
+            else{
+                person_string+='\n}\n<span style="color:#EAB308">&#60;/script&#62;</span></pre>'
+            }
+
+            document.getElementById("content").innerHTML = person_string;
+        }
+        else if(id==4){
+            let date_post = '';
+            let date_expire = '';
+
+            if(covid_values[4].datePosted=='' && covid_values[5].timePosted==''){
+                date_post = '';
+            }
+            else if(covid_values[4].datePosted=='' && covid_values[5].timePosted!=''){
+                date_post = '';
+            }
+            else if(covid_values[4].datePosted!='' && covid_values[5].timePosted==''){
+                date_post = covid_values[4].datePosted+'T00:00';
+            }
+            else if(covid_values[4].datePosted!='' && covid_values[5].timePosted!=''){
+                date_post = covid_values[4].datePosted+'T'+covid_values[5].timePosted;
+            }
+
+            if(covid_values[6].dateExpires=='' && covid_values[7].timeExpires==''){
+                date_expire = '';
+            }
+            else if(covid_values[6].dateExpires=='' && covid_values[7].timeExpires!=''){
+                date_expire = '';
+            }
+            else if(covid_values[6].dateExpires!='' && covid_values[7].timeExpires==''){
+                date_expire = covid_values[4].dateExpires+'T00:00';
+            }
+            else if(covid_values[6].dateExpires!='' && covid_values[7].timeExpires!=''){
+                date_expire = covid_values[6].dateExpires+'T'+covid_values[7].timeExpires;
+            }
+
+            let covid_string = '<pre><span style="color:#EAB308">&#60;script</span> <span style="color:#E80F88"> type="application/ld+json"</span><span style="color:#EAB308">></span>\n{\n    "@context": "https://schema.org/",\n    "@type": "SpecialAnnouncement",\n    "name": '+'"'+covid_values[0].name+'"'+',\n    "text": '+'"'+covid_values[1].text+'"'+',\n    "datePosted": '+'"'+date_post+'"'+',\n    "expires": '+'"'+date_expire+'"'+',\n    "quarantineGuidelines": '+'"'+covid_values[2].quarantineGuidelines+'"'+',\n    "diseasePreventionInfo": '+'"'+covid_values[3].diseasePreventionInfo+'"'+',\n    "category": "https://www.wikidata.org/wiki/Q81068910"';
+
+            if(Object.keys(covid_values[8]).length!=0){
+                covid_string+=',\n    "spatialCoverage": [';
+            }
+            let dict_str='';
+            for(const i in covid_values[8]){
+                dict_str += '\n      {\n        "@type": "AdministrativeArea",\n        "name": '+'"'+covid_values[8][i]+'"'+'\n       },';
+            }
+            if(Object.keys(covid_values[8]).length!=0){
+                let s = dict_str.slice(0,-1);
+                covid_string += s +'\n     ]\n }\n<span style="color:#EAB308">&#60;/script&#62;</span></pre>'
+            }
+            else{
+                covid_string+='\n}\n<span style="color:#EAB308">&#60;/script&#62;</span></pre>'
+            }
+                        
+                 
+            document.getElementById("content").innerHTML = covid_string;
+        }
+
+        else if(id==5){
+            
+            let video_string = '<pre><span style="color:#EAB308">&#60;script</span> <span style="color:#E80F88"> type="application/ld+json"</span><span style="color:#EAB308">></span>\n{\n    "@context": "https://schema.org/",\n    "@type": "SpecialAnnouncement",\n    "name": '+'"'+video_values[0].name+'"'+',\n    "description": '+'"'+video_values[1].description+'"'+',\n';
+
+            if(Object.keys(video_values[5]).length!=0){
+                video_string+='    "thumbnailUrl": [';
+                let dict_str='';
+                for(const i in video_values[5]){
+                    dict_str += '\n       '+video_values[5][i]+',';
+                }
+                let s = dict_str.slice(0,-1);
+                video_string += s +'\n    ]';// 
+            }
+            else{
+                video_string+='    "thumbnailUrl": ""';
+            }
+
+            video_string+=',\n    "uploadDate": '+'"'+video_values[2].upload_date+'"';
+
+            if(video_values[6].content_url!=''){
+                video_string+=',\n    "contentUrl": '+'"'+video_values[6].content_url+'"';
+            }
+            if(video_values[7].embed_url!=''){
+                video_string+=',\n    "embedUrl": '+'"'+video_values[7].embed_url+'"';
+            }
+            if(video_values[8].publisher_name!=''){
+                video_string+=',\n    "publisher": {\n      "@type": "Organization",\n      "name": '+'"'+video_values[8].publisher_name+'"'+',\n      "logo": {\n          "@type": "ImageObject",\n          "url": '+'"'+video_values[9].publisher_logo_url+'"'+',\n          "width": '+'"'+video_values[10].publisher_logo_width+'"'+',\n          "height": '+'"'+video_values[11].publisher_logo_height+'"'+'\n        }\n      }';
+            }
+            if(video_values[3].minutes!='' && video_values[4].seconds==''){
+                video_string+=',\n    "duration": '+'"'+'PT'+video_values[3].minutes+'M0S'+'"';
+            }
+
+            else if(video_values[3].minutes=='' && video_values[4].seconds!=''){
+                video_string+=',\n    "duration": '+'"'+'PT'+'0'+'M'+video_values[4].seconds+'S"';
+            }
+            else if(video_values[3].minutes!='' && video_values[4].seconds!=''){
+                video_string+=',\n    "duration": '+'"'+'PT'+video_values[3].minutes+'M'+video_values[4].seconds+'S"';
+            }
+            
+            video_string+='\n}\n<span style="color:#EAB308">&#60;/script&#62;</span></pre>';
+            document.getElementById("content").innerHTML = video_string;
+        }
+        else if(id==6){
+                let how_string = '<pre><span style="color:#EAB308">&#60;script</span> <span style="color:#E80F88"> type="application/ld+json"</span><span style="color:#EAB308">></span>\r\n{\n  "@context": "https://schema.org/",\n  "@type": "HowTo"';
+                if(how_values[0].name!=''){
+                    how_string+=',\n  "name": '+'"'+how_values[0].name+'"'+'';
+                }
+                if(how_values[1].description!=''){
+                    how_string+=',\n  "description": '+'"'+how_values[1].description+'"'+'';
+                }
+                if(how_values[5].image_url!=''){
+                    how_string+=',\n  "image": '+'"'+how_values[5].image_url+'"'+'';
+                }
+                if(how_values[2].time!=''){
+                    how_string+=',\n  "totalTime": '+'"PT'+how_values[2].time+'M"'+'';
+                }
+                if(how_values[3].cost!='' || how_values[4].currency!=''){
+                    how_string+=',\n  "estimatedCost": {\n    "@type": "MonetaryAmount",\n    "currency": '+'"'+how_values[4].currency+'"'+',\n    "value": '+'"'+how_values[3].cost+'"'+'\n  }';
+                }
+
+                if(Object.keys(how_values[6]).length!=0){
+                    how_string+=',\n  "supply":[';
+                    let dict_str='';
+                    for(const i in how_values[6]){
+                        dict_str+='\n    {\n      "@type": "HowToSupply",\n      "name": '+'"'+how_values[6][i]+'"'+'\n    },';
+                    }
+                    let s = dict_str.slice(0,-1);
+                    how_string += s +'\n  ]';// 
+                }
+                if(Object.keys(how_values[7]).length!=0){
+                    how_string+=',\n  "tool":[';
+                    let dict_str='';
+                    for(const i in how_values[7]){
+                        dict_str+='\n    {\n      "@type": "HowToTool",\n      "name": '+'"'+how_values[7][i]+'"'+'\n    },';
+                    }
+                    let s = dict_str.slice(0,-1);
+                    how_string += s +'\n  ]';// 
+                }
+                if(Object.keys(how_values[8]).length!=0){
+                    how_string+=',\n  "step":[';
+                    let dict_str='';
+                    for(const i in how_values[8]){
+                        dict_str+='\n    {\n      "@type": "HowToStep",\n      "text": '+'"'+how_values[8][i]['instructions']+'"'+'\n      "image": '+'"'+how_values[8][i]['image']+'"'+'\n      "url": '+'"'+how_values[8][i]['url']+'"'+'\n      "name": '+'"'+how_values[8][i]['name']+'"'+'\n    },';
+                    }
+                    let s = dict_str.slice(0,-1);
+                    how_string += s +'\n  ]';// 
+                }
+                
+                how_string+='\n}\n<span style="color:#EAB308">&#60;/script&#62;</span></pre>';
+                document.getElementById("content").innerHTML = how_string;
+            }
+    
+        else if(id==7){
+            let job_string = '<pre><span style="color:#EAB308">&#60;script</span> <span style="color:#E80F88"> type="application/ld+json"</span><span style="color:#EAB308">></span>\r\n{\n  "@context": "https://schema.org/",\n  "@type": "JobPosting",\n  "title": '+'"'+job_values[0].title+'"'+'';
+            if(job_values[1].identifier!=''){
+                job_string+=',\n  "identifier": {\n    "@type": "PropertyValue",\n    "name": '+'"'+job_values[3].company+'"'+',\n    "value": '+'"'+job_values[1].identifier+'"'+'\n  }';
+            }
+            
+            job_string+=',\n  "description": '+'"'+job_values[2].description+'"'+',\n  "hiringOrganization": {\n    "@type": "Organization",\n    "name": '+'"'+job_values[3].company+'"';
+            if(job_values[4].company_url!=''){
+                job_string+=',\n    "sameAs":'+'"'+job_values[4].company_url+'"';
+            }   
+            job_string+="\n  }"
+            if(job_values[5].industry!=''){
+                job_string+=',\n  "industry": '+'"'+job_values[5].industry+'"'+'';
+            }
+            if(job_values[7].hours!=''){
+                job_string+=',\n  "workHours": '+'"'+job_values[7].hours+'"'+'';
+            }
+
+            job_string+=',\n  "employmentType": '+'"'+job_values[6].type+'"'+',\n  "datePosted": '+'"'+job_values[8].posted+'"'+',\n  "validThrough": '+'"'+job_values[9].expires+'"';
+            if(!document.getElementById('flexCheckDefault').checked){
+                job_string+=',\n  "jobLocation": {\n    "@type": "Place",\n    "address": {\n      "@type": "PostalAddress",\n      "streetAddress": '+'"'+job_values[12].street+'"'+',\n      "addressLocality": '+'"'+job_values[13].city+'"'+',\n      "postalCode": '+'"'+job_values[14].zip_code+'"'+',\n      "addressCountry": '+'"'+job_values[10].country_code+'"'+',\n      "addressRegion": '+'"'+job_values[11].region_code+'"'+'\n  },\n';
+            }
+            else{
+                job_string+=',\n  "applicantLocationRequirements": {\n    "@type": "Country",\n    "name": '+'"'+job_values[10].country_code+'"'+'\n  },\n  "jobLocationType": "TELECOMMUTE",\n';
+
+            }
+            job_string+='  "baseSalary": {\n    "@type": "MonetaryAmount",\n    "value": {\n      "@type": "QuantitativeValue",\n      "value": '+'"'+job_values[15].salary+'"'+'\n     }\n  },'
+            job_string+='\n  "responsibilities": '+'"'+job_values[16].responsibilities+'"'
+
+            if(job_values[17].skills!=''){
+                job_string+=',\n  "skills": '+'"'+job_values[17].skills+'"'+'';
+            }
+
+            if(job_values[18].qualifications!=''){
+                job_string+=',\n  "qualifications": '+'"'+job_values[18].qualifications+'"'+'';
+            }
+
+            if(job_values[19].education_requirements!=''){
+                job_string+=',\n  "educationRequirements": '+'"'+job_values[19].education_requirements+'"'+'';
+            }
+
+            if(job_values[20].experience_requirements!=''){
+                job_string+=',\n  "experienceRequirements": '+'"'+job_values[20].experience_requirements+'"'+'';
+            }
+            
+            job_string+='\n}\n<span style="color:#EAB308">&#60;/script&#62;</span></pre>';
+            document.getElementById("content").innerHTML = job_string;
+        }
+        else if(id==8){
+            let event_string = '<pre><span style="color:#EAB308">&#60;script</span> <span style="color:#E80F88"> type="application/ld+json"</span><span style="color:#EAB308">></span>\r\n{\n  "@context": "https://schema.org",\n  "@type": "Event",\n  "name": '+'"'+event_values[0].name+'"';
+            let start_date = '';
+            if(event_values[1].description!=''){
+                event_string+=',\n  "description": '+'"'+event_values[1].description+'"';
+            }
+            if(event_values[2].image_url!=''){
+                event_string+=',\n  "image": '+'"'+event_values[2].image_url+'"';
+            }
+            if(event_values[3].start_date!='' && event_values[4].start_time!=''){
+                start_date = event_values[3].start_date+"T"+event_values[4].start_time;
+            }
+            else if(event_values[3].start_date!='' && event_values[4].start_time==''){
+                start_date = event_values[3].start_date;
+            }
+
+            event_string+=',\n  "startDate": '+'"'+start_date+'"';
+            if(event_values[5].end_date!='' && event_values[6].end_time!=''){
+                event_string+=',\n  "endDate": '+'"'+event_values[5].end_date+"T"+event_values[6].end_time+'"';
+            }
+            else if(event_values[5].end_date!='' && event_values[6].end_time==''){
+                event_string+=',\n  "endDate": '+'"'+event_values[5].end_date;
+            }
+            
+            if(event_values[7].performer_type!=''){
+                event_string+=',\n "performer": {\n    "@type": '+'"'+event_values[7].performer_type+'"'+',\n    "name": '+'"'+event_values[8].performer_name+'"'+'\n  }';
+            }
+
+            event_string+=',\n  "location": {\n    "@type": "Place",\n    "name": '+'"'+event_values[9].venue_name+'"'+',\n    "address": {\n      "@type": "PostalAddress",\n      "streetAddress": '+'"'+event_values[10].street+'"'+',\n      "addressLocality": '+'"'+event_values[11].city+'"'+',\n      "postalCode": '+'"'+event_values[12].zip_code+'"'+',\n      "addressCountry": '+'"'+event_values[13].country_code+'"'+'\n    }\n  }';
+            console.log(event_values)
+            if(Object.keys(event_values[16]).length!=0){
+                event_string+=',\n  "offers":[';
+                let dict_str='';
+                for(const i in event_values[16]){
+                    dict_str+='\n    {\n      "@type": "offer",\n      "name": '+'"'+event_values[16][i].name+'"'+',\n      "price": '+'"'+event_values[16][i].price+'"'+',\n      "priceCurrency": '+'"'+event_values[15].currency_code+'"'+',\n      "validFrom": '+'"'+event_values[16][i].from+'"'+',\n      "url": '+'"'+event_values[16][i].url+'"'+',\n      "availability": '+'"'+event_values[16][i].availability+'"'+''+'\n    },';
+                }
+                let s = dict_str.slice(0,-1);
+                event_string += s +'\n  ]';
+            }
+            
+            event_string+='\n}\n<span style="color:#EAB308">&#60;/script&#62;</span></pre>';
+            document.getElementById("content").innerHTML = event_string;
+        }
+        else if(id==9){
+            let org_string = '<pre><span style="color:#EAB308">&#60;script</span> <span style="color:#E80F88"> type="application/ld+json"</span><span style="color:#EAB308">></span>\r\n{\n  "@context": "https://schema.org",\n  "@type": '+'"'+org_values[0].type+'"'+',\n  "name": '+'"'+org_values[1].name+'"'+',\n  "url": '+'"'+org_values[3].url+'"'+',\n  "logo": '+'"'+org_values[4].logo_url+'"'+'';
+            
+            let start_date = '';
+            if(org_values[2].alt_name!=''){
+                org_string+=',\n  "alternateName": '+'"'+org_values[2].alt_name+'"';
+            }
+            let dict_str='';
+            if(Object.keys(org_values[5]).length!=0){
+                org_string+=',\n  "sameAs": [';
+
+                for(const i in org_values[5]){
+                    dict_str += '\n   '+'"'+org_values[5][i]+'"'+',';
+                }
+            }
+            
+            if(Object.keys(org_values[5]).length!=0){
+                let s = dict_str.slice(0,-1);
+                org_string += s +'\n   ]'
+            }
+           
+            
+            org_string+='\n}\n<span style="color:#EAB308">&#60;/script&#62;</span></pre>';
+            document.getElementById("content").innerHTML = org_string;
+
+            
+        }
+        else if(id==10){
+            let local_string = '<pre><span style="color:#EAB308">&#60;script</span> <span style="color:#E80F88"> type="application/ld+json"</span><span style="color:#EAB308">></span>\r\n{\n  "@context": "https://schema.org",\n  "@type": "LocalBusiness",\n  "name": '+'"'+local_values[0].name+'"'+',\n  "image": '+'"'+local_values[1].image_url+'"'+',\n  "@id": '+'"'+local_values[2].id_url+'"'+',\n  "url": '+'"'+local_values[3].url+'"'+',\n  "telephone": '+'"'+local_values[4].phone+'"'+',\n  "address": {\n    "@type": "PostalAddress",\n    "streetAddress": '+'"'+local_values[6].street+'"'+',\n    "addressLocality": '+'"'+local_values[7].city+'"'+',\n    "postalCode": '+'"'+local_values[8].zip_code+'"'+',\n    "addressCountry": '+'"'+local_values[9].country_code+'"'+'\n  }';
+            
+            if(local_values[5].price_range!=''){
+                local_string+=',\n  "priceRange": '+'"'+local_values[5].price_range+'"';
+            }
+            let dict_str='';
+            if(Object.keys(local_values[11]).length!=0){
+                local_string+=',\n  "sameAs": [';
+
+                for(const i in local_values[11]){
+                    dict_str += '\n   '+'"'+local_values[11][i]+'"'+',';
+                }
+            }
+            
+            if(Object.keys(local_values[11]).length!=0){
+                let s = dict_str.slice(0,-1);
+                local_string += s +'\n   ]'
+            }
+
+            if(document.getElementById("flexCheckDefault-1").checked){
+                local_string+=',\n  "opens": "00:00",\n  "closes": "23:59"';
+            }
+            else{
+                if(Object.keys(local_values[12]).length!=0){
+                    let temp_string=',\n   "openingHoursSpecification": [  ';
+                    for(const i in local_values[12]){
+                        temp_string+='\n      {\n        "@type": "OpeningHoursSpecification",\n        "dayOfWeek": [';
+                        let temp = '';
+                        for(const j in local_values[12][i]['days']){
+                            if(local_values[12][i]['days'][j]==true){
+                                let val = j[0].toUpperCase()+j.slice(1);
+                                temp+='\n        "'+val+'",';
+                            }
+                        }
+                        temp_string+=temp.slice(0,-1)+'\n         ]\n        "opens:'+'"'+local_values[12][i]['opens_at']+'"'+',\n        "closes:'+'"'+local_values[12][i]['closes_at']+'"'+'    \n      },';
+                    }
+                    local_string+=temp_string.slice(0,-1)+"\n    ]";
+                }
+            }
+           
+            local_string+='\n}\n<span style="color:#EAB308">&#60;/script&#62;</span></pre>';
+            document.getElementById("content").innerHTML = local_string;
+            
+        }
+
+        else if(id==11){
+            let product_string = '<pre><span style="color:#EAB308">&#60;script</span> <span style="color:#E80F88"> type="application/ld+json"</span><span style="color:#EAB308">></span>\r\n{\n  "@context": "https://schema.org/",\n  "@type": "Product",\n  "name": '+'"'+product_values[0].name+'"'+',\n  "image": '+'"'+product_values[1].image_url+'"'+'';
+                
+            if(product_values[2].brand!=''){
+                product_string+=',\n  "brand": '+'"'+product_values[2].brand+'"';
+            }
+            if(product_values[3].description!=''){
+                product_string+=',\n  "description": '+'"'+product_values[3].description+'"';
+            }
+            if(product_values[8].aggregate_rating_value!=''){
+                product_string+=',\n    "aggregateRating": {\n    "@type": "AggregateRating",\n    "ratingValue": '+'"'+product_values[8].aggregate_rating_value+'"'+',\n    "bestRating": '+'"'+product_values[10].highest_value_allowed+'"'+',\n    "worstRating": '+'"'+product_values[11].lowest_value_allowed+'"'+',\n    "ratingCount": '+'"'+product_values[9].number_of_ratings+'"'+'\n    }'
+            }
+            if(product_values[4].sku!=''){
+                product_string+=',\n  "sku": '+'"'+product_values[4].sku+'"';
+            }
+            if(product_values[5].gtin8!=''){
+                product_string+=',\n  "gtin8": '+'"'+product_values[5].gtin8+'"';
+            }
+            if(product_values[6].gtin13!=''){
+                product_string+=',\n  "gtin13": '+'"'+product_values[6].gtin13+'"';
+            }
+            if(product_values[7].gtin14!=''){
+                product_string+=',\n  "gtin14": '+'"'+product_values[7].gtin14+'"';
+            }
+            if(product_values[12].mpn!=''){
+                product_string+=',\n  "mpn": '+'"'+product_values[12].mpn+'"';
+            }
+            if(product_values[13].offer_type!=''){
+                
+                product_string+=',\n  "offers": {\n    "@type": '+'"'+product_values[13].offer_type+'"'+',\n    "url": '+'"'+product_values[14].url+'"'+',\n    "priceCurrency": '+'"'+product_values[15].currency_code+'"'+',';
+                if(product_values[13].offer_type=='Offer'){
+                    product_string+='\n    "price": '+'"'+product_values[16].price+'"'+',\n    "priceValidUntil": '+'"'+product_values[17].price_validity+'"'+',\n    "availability": "https://schema.org/'+'"'+product_values[19].availability+'"'+',\n    "itemCondition": "https://schema.org/'+'"'+product_values[18].condition+'"'+'\n  }';
+                }
+                else{
+                    product_string+='\n    "lowPrice": '+'"'+product_values[20].low_price+'"'+',\n    "highPrice": '+'"'+product_values[21].high_price+'"'+',\n    "offerCount": '+product_values[22].no_of_offers+'"';
+                }
+            }
+
+            if(Object.keys(product_values[23]).length!=0){
+                    let temp_string=',\n  "reviews": [  ';
+                    for(const i in product_values[23]){
+                        temp_string+='\n     {\n       "@type": "Review",\n       "reviewBody": '+'"'+product_values[23][i].body+'"'+',\n       "author": {\n          "@type": "Person",\n          "name": '+'"'+product_values[23][i].author+'"\n        }';//+'\n        }\n      },';
+                        if(product_values[23][i].name!=''){
+                            temp_string+=',\n       "name":'+'"'+product_values[23][i].name+'"';
+                        }
+                        if(product_values[23][i].date!=''){
+                            temp_string+=',\n       "datePublished":'+'"'+product_values[23][i].date+'"';
+                        }
+                        if(product_values[23][i].rating!=''){
+                            temp_string+=',\n       "reviewRating": {\n         "@type": "Rating",\n         "ratingValue": '+'"'+product_values[23][i].rating+'"'+'\n       }';
+                        }
+                        if(product_values[23][i].publisher!=''){
+                            temp_string+=',\n       "publisher": {\n         "@type": "Organization",\n         "name": '+'"'+product_values[23][i].publisher+'"'+'\n       }';
+                        }
+                        temp_string+='\n     },'
+                    }
+                    
+                    product_string+=temp_string.slice(0,-1)+"\n    ]";
+                }
+            
+            product_string+='\n}\n<span style="color:#EAB308">&#60;/script&#62;</span></pre>';
+            document.getElementById("content").innerHTML = product_string;
+            
+        }
+        else if(id==12){
+            console.log(recipe_values)
+            let recipe_string = '<pre><span style="color:#EAB308">&#60;script</span> <span style="color:#E80F88"> type="application/ld+json"</span><span style="color:#EAB308">></span>\r\n{\n  "@context": "https://schema.org/",\n  "@type": "Recipe",\n  "name": '+'"'+recipe_values[0].name+'"';
+            if(Object.keys(recipe_values[4]).length==0){
+                recipe_string+=',\n  "image": '+'"'+'"';
+            }
+            else{
+                recipe_string+=',\n  "image": '+'[';
+                let dict_str=''
+                for(const i in recipe_values[4]){
+                    dict_str += '\n    '+'"'+recipe_values[4][i]+'"'+',';
+                }
+                recipe_string+=dict_str.slice(0,-1)+'\n   ]';
+            }
+
+            recipe_string+=',\n  "description": '+'"'+recipe_values[1].description+'"'+',\n  "keywords": '+'"'+recipe_values[2].keywords+'"'+',\n  "author": {\n    "@type": "Person",\n    "name": '+'"'+recipe_values[3].creator+'"'+'\n   },\n   "prepTime": "PT'+recipe_values[8].preparation+'M",\n   "cookTime": "PT'+recipe_values[9].cooking+'M"'+',\n   "nutrition": {\n     "@type": "NutritionInformation",\n     "calories": '+'"'+recipe_values[11].calories+'"'+',\n     "servingSize": '+'"'+recipe_values[10].serving_size+'"'+',\n     "fatContent": '+'"'+recipe_values[12].fat+'g"\n    }';
+            if(recipe_values[6].cuisine!=''){
+                recipe_string+=',\n   "recipeCuisine": '+'"'+recipe_values[6].cuisine+'"';
+            }
+            if(recipe_values[5].category!=''){
+                recipe_string+=',\n   "recipeCategory": '+'"'+recipe_values[5].category+'"';
+            }
+
+            if(Object.keys(recipe_values[13]).length!=0){
+                let temp_string=',\n   "recipeInstructions": [  ';
+                for(const i in recipe_values[13]){
+                    temp_string+='\n     {\n       "@type": "HowToStep",\n       "text": '+'"'+recipe_values[13][i]+'"';
+                    temp_string+='\n     },'
+                }
+                
+                recipe_string+=temp_string.slice(0,-1)+"\n    ]";
+            }
+            if(Object.keys(recipe_values[14]).length!=0){
+                recipe_string+=',\n   "recipeIngredients": '+'[';
+                let dict_str=''
+                for(const i in recipe_values[14]){
+                    dict_str += '\n    '+'  "'+recipe_values[14][i]+'"'+',';
+                }
+                recipe_string+=dict_str.slice(0,-1)+'\n    ]';
+            }
+            if(recipe_values[15].video_content_url!=''){
+                recipe_string+=',\n   "video": {\n     "@type": "VideoObject",\n     "name": '+'"'+recipe_values[0].name+'"'+',\n     "description": '+'"'+recipe_values[1].description+'"'+',\n     "thumbnailUrl": "",\n     "uploadDate": '+'"'+recipe_values[17].date_published+'"'+',\n     "contentUrl": '+'"'+recipe_values[15].video_content_url+'"'+',\n     "embedUrl": '+'"'+recipe_values[16].video_embed_url+'"'+'\n  }';
+            }
+            if(recipe_values[18].aggregate_rating_value!=''){
+                recipe_string+=',\n   "aggregateRating": {\n     "@type": "AggregateRating",\n     "ratingValue": '+'"'+recipe_values[18].aggregate_rating_value+'"'+',\n     "bestRating": '+'"'+recipe_values[20].highest_value_allowed+'"'+',\n     "worstRating": '+'"'+recipe_values[21].lowest_value_allowed+'"'+',\n     "ratingCount": '+'"'+recipe_values[19].number_of_ratings+'"'+'\n  }';
+            }
+
+            if(Object.keys(recipe_values[22]).length!=0){
+                let temp_string=',\n  "reviews": [  ';
+                for(const i in recipe_values[22]){
+                    temp_string+='\n     {\n       "@type": "Review",\n       "reviewBody": '+'"'+recipe_values[22][i].body+'"'+',\n       "author": {\n          "@type": "Person",\n          "name": '+'"'+recipe_values[22][i].author+'"\n        }';//+'\n        }\n      },';
+                    if(recipe_values[22][i].name!=''){
+                        temp_string+=',\n       "name":'+'"'+recipe_values[22][i].name+'"';
+                    }
+                    if(recipe_values[22][i].date!=''){
+                        temp_string+=',\n       "datePublished":'+'"'+recipe_values[22][i].date+'"';
+                    }
+                    if(recipe_values[22][i].rating!=''){
+                        temp_string+=',\n       "reviewRating": {\n         "@type": "Rating",\n         "ratingValue": '+'"'+recipe_values[22][i].rating+'"'+'\n       }';
+                    }
+                    if(recipe_values[22][i].publisher!=''){
+                        temp_string+=',\n       "publisher": {\n         "@type": "Organization",\n         "name": '+'"'+recipe_values[22][i].publisher+'"'+'\n       }';
+                    }
+                    temp_string+='\n     },'
+                }
+                
+                recipe_string+=temp_string.slice(0,-1)+"\n    ]";
+            }
+            
+            recipe_string+='\n}\n<span style="color:#EAB308">&#60;/script&#62;</span></pre>';
+            document.getElementById("content").innerHTML = recipe_string;
+            
+        }
+    }
+
+</script>
+</html>
